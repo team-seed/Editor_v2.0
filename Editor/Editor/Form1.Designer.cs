@@ -42,6 +42,7 @@
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -74,7 +75,7 @@
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(177, 44);
             this.button2.TabIndex = 0;
-            this.button2.Text = "button2";
+            this.button2.Text = "SelectMusic\r\n";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -203,16 +204,27 @@
             this.panel2.TabIndex = 0;
             this.panel2.Click += new System.EventHandler(this.panel2_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(405, 25);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(7, 15);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "\r\n";
+            // 
             // Form1
             // 
             this.ClientSize = new System.Drawing.Size(1074, 568);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Name = "Form1";
+            this.SizeChanged += new System.EventHandler(this.form1_SizeChanged);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.SizeChanged += new System.EventHandler(this.form1_SizeChanged);
+            this.PerformLayout();
 
         }
 
@@ -232,6 +244,7 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Label label1;
     }
 }
 

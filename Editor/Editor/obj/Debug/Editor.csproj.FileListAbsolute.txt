@@ -16,3 +16,8 @@ C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\obj\Debug\Editor.pdb
 C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\bin\Debug\Editor.exe.config
 C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\bin\Debug\Editor.exe
 C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\bin\Debug\Editor.pdb
+C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\bin\Debug\Interop.WMPLib.dll
+C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\bin\Debug\AxInterop.WMPLib.dll
+C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\obj\Debug\Interop.WMPLib.dll
+C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\obj\Debug\AxInterop.WMPLib.dll
+C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\obj\Debug\Editor.csproj.ResolveComReference.cache

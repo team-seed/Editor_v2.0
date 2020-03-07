@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Media;
 
 namespace Editor
 {
@@ -27,15 +28,34 @@ namespace Editor
             }
         };
         List<Note> NoteList;
+        private SoundPlayer player;
         public Form1()
         {
             InitializeComponent();
+            EnablePlaybackControls(false);
+            InitializeControls();
+            InitializeSound();
+        }
+        private void InitializeControls() {
+            StatusBarPanel barpanel = new StatusBarPanel();
+            barpanel.BorderStyle = StatusBarPanelBorderStyle.Sunken;
+            barpanel.Text = "Ready.";
+            barpanel.AutoSize = StatusBarPanelAutoSize.Spring;
+            this.statusBar.ShowPanels = true;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            panel2.Height = 10000;
-            panel1.ScrollToBottom();
+            OpenFileDialog file = new OpenFileDialog();
+            file.CheckFileExists = true;
+            file.Filter = "WAV files (*.wav)|*.wav";
+            file.DefaultExt = ".wav";
+
+            if (file.ShowDialog() == DialogResult.OK)
+            { 
+                this.label1.Text        = file.SafeFileName;
+                player.SoundLocation    = file.SafeFileName;
+            }
 
         }
 
@@ -68,6 +88,7 @@ namespace Editor
             panel1.Refresh();
         }
 
+       
     }
     public static class PanelExtension
     {
