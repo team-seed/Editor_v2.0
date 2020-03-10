@@ -257,13 +257,13 @@ namespace Editor
                     switch (NoteList[index].type) 
                     {
                         case 0:
-                            e.Graphics.DrawString("0", drawFont, drawBrush, (l+r) / 2 * MainPanel.Width, cur_pos % BeatLength + y - 3, drawFormat);
+                            e.Graphics.DrawString("0", drawFont, drawBrush, (l + r) * MainPanel.Width / 32, cur_pos % BeatLength + y - 5, drawFormat);
                             break;
                         case 1:
-                            e.Graphics.DrawString("1", drawFont, drawBrush, (l + r) / 2 * MainPanel.Width, cur_pos % BeatLength + y - 3, drawFormat);
+                            e.Graphics.DrawString("1", drawFont, drawBrush, (l + r) * MainPanel.Width / 32, cur_pos % BeatLength + y - 5, drawFormat);
                             break;
                         case 2:
-                            e.Graphics.DrawString("2", drawFont, drawBrush, (l + r) / 2 * MainPanel.Width, cur_pos % BeatLength + y - 3, drawFormat);
+                            e.Graphics.DrawString("2", drawFont, drawBrush, (l + r) * MainPanel.Width / 32, cur_pos % BeatLength + y - 5, drawFormat);
                             break;
                     }
                 }
