@@ -1,5 +1,6 @@
 ﻿namespace Editor
 {
+
     partial class Form1
     {
         /// <summary>
@@ -36,8 +37,8 @@
             this.Settings = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
-            this.MainPanel_Background = new System.Windows.Forms.Panel();
-            this.MainPanel = new System.Windows.Forms.Panel();
+            this.MainPanel_Background = new  BackgroundPanel();
+            this.MainPanel = new BackgroundPanel();
             this.ProgressBar_Bottom = new System.Windows.Forms.Panel();
             this.music_duration = new System.Windows.Forms.Label();
             this.music_position = new System.Windows.Forms.Label();
@@ -150,6 +151,7 @@
             this.MainPanel.TabIndex = 0;
             this.MainPanel.Click += new System.EventHandler(this.MainPanel_Click);
             this.MainPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.MainPanel_Paint);
+            this.MainPanel.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.MainPanel_MouseWheel);
             // 
             // ProgressBar_Bottom
             // 
@@ -228,6 +230,7 @@
             // 
             // timer1
             // 
+            this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // panel1

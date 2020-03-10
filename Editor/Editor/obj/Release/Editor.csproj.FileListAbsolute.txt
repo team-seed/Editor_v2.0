@@ -24,7 +24,6 @@ C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\obj\Release\Editor.cspro
 C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\obj\Release\Interop.WMPLib.dll
 C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\obj\Release\AxInterop.WMPLib.dll
 C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\obj\Release\Editor.csproj.ResolveComReference.cache
-C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\obj\Release\Editor.Form1.resources
 C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\obj\Release\Editor.Properties.Resources.resources
 C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\obj\Release\Editor.csproj.GenerateResource.cache
 C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\obj\Release\Editor.csproj.CopyComplete
@@ -33,3 +32,4 @@ C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\obj\Release\Editor.pdb
 C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\bin\Release\Newtonsoft.Json.dll
 C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\bin\Release\Newtonsoft.Json.xml
 C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\obj\Release\Editor.SubForm_setting.resources
+C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\obj\Release\Editor.Form1.resources

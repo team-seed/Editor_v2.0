@@ -12,35 +12,44 @@ using System.Windows.Media;
 
 namespace Editor
 {
-    
     public partial class Form1 : Form
     {
 
         class Note {
-            public int pos,type,first,last,nextpos,dir;
-            public Note (int Position,int Type,int First, int Last) {
-               this.pos     =   Position;
-               this.type    =   Type;
-               this.first   =   First;
-               this.last    =   Last;
+            public int pos, type, first, last, nextpos, dir;
+            public Note(int Position, int Type, int First, int Last) {
+                this.pos = Position;
+                this.type = Type;
+                this.first = First;
+                this.last = Last;
             }
-            public Note(int Position, int Type, int First, int Last, int Extra) : this(Position, Type,  First,  Last) {
-                if (Type == 1)      this.nextpos = Extra;
-                else if (Type == 2) this.dir     = Extra; 
+            public Note(int Position, int Type, int First, int Last, int Extra) : this(Position, Type, First, Last) {
+                if (Type == 1) this.nextpos = Extra;
+                else if (Type == 2) this.dir = Extra;
             }
         };
-        List<Note> NoteList=new List<Note>();
+        List<Note> NoteList = new List<Note>();
         double bpm, offset;
         int beat;
         bool data_is_ready = false;
         SubForm_setting SetForm;
-		
+        Graphics BackGraphics;
+        Bitmap backBmp;
+
         bool isDragging = false;
         bool isLoaded = false;
-		
+
         public Form1()
         {
             InitializeComponent();
+            backBmp = new Bitmap(this.MainPanel.Width, this.MainPanel.Height);
+            BackGraphics = Graphics.FromImage(backBmp);
+            
+            this.SetStyle(ControlStyles.UserPaint |
+                            ControlStyles.AllPaintingInWmPaint |
+                            ControlStyles.OptimizedDoubleBuffer, true);
+            this.UpdateStyles();
+            
         }
         private void form1_SizeChanged(object sender, EventArgs e)
         {
@@ -191,7 +200,6 @@ namespace Editor
             if (!data_is_ready) return;
             if (bpm == 0) return;
             int BeatLength = Convert.ToInt32( 60 / bpm * 1000);
-
             System.Drawing.Pen pen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(255, 0, 0, 0), 5);
             System.Drawing.Font drawFont = new System.Drawing.Font("Arial", 10);
             System.Drawing.SolidBrush drawBrush = new System.Drawing.SolidBrush(System.Drawing.Color.Black);
@@ -224,9 +232,13 @@ namespace Editor
             drawFont.Dispose();
             drawBrush.Dispose();
         }
+      
         private void MainPanel_Background_Paint(object sender, PaintEventArgs e)
         {
+            //if (HasBackground) return;
+            //HasBackground = true;
             //畫線
+
 
             System.Drawing.Pen pen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(255, 0, 0, 0),5);
             int mpw = MainPanel_Background.Width;
@@ -271,7 +283,20 @@ namespace Editor
         {
             if(isLoaded)  MainPanel_DrawBeatLine(sender, e);
         }
-
+        private void MainPanel_MouseWheel(object sender, MouseEventArgs me)
+        {
+            if (!isLoaded || !data_is_ready) return;
+            if (me.Delta >0)
+            {
+                axWindowsMediaPlayer1.Ctlcontrols.currentPosition += 0.1;
+            }
+            else
+            {
+                axWindowsMediaPlayer1.Ctlcontrols.currentPosition -= 0.1;
+            }
+            ProgressBar.Height = Convert.ToInt32(Convert.ToDouble(ProgressBar_Background.Height) * axWindowsMediaPlayer1.Ctlcontrols.currentPosition / axWindowsMediaPlayer1.Ctlcontrols.currentItem.duration);
+            Refresh_Layout();
+        }
 		
 		///
 		// Yabadado
@@ -355,6 +380,16 @@ namespace Editor
         }
 
         
+    }
+    public partial class BackgroundPanel : Panel
+    {
+        public BackgroundPanel()
+        {
+            this.SetStyle(ControlStyles.UserPaint |
+                            ControlStyles.AllPaintingInWmPaint |
+                            ControlStyles.OptimizedDoubleBuffer, true);
+            this.UpdateStyles();
+        }
     }
     public static class PanelExtension
     {
