@@ -119,7 +119,7 @@ namespace Editor
                 axWindowsMediaPlayer1.Ctlcontrols.stop();
             }
         }
-       
+ 
 		private void timer1_Tick(object sender, EventArgs e)
         {
             if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsPlaying)
@@ -128,6 +128,7 @@ namespace Editor
                 Refresh_Layout();
             }
         }
+        
         ///
         // MusicProgressBar
         ///
@@ -195,6 +196,16 @@ namespace Editor
         /// 令MainPanel 高度為 3000 , 顯示出的範圍約700ms 
         /// 隨著ProgressBar , 計算出當前Panel上應該要顯示出的畫面 
         /// 
+        class Beatline 
+        {
+            public  Beatline(int Time,int Y) 
+            {
+                this.time = Time;
+                this.y = Y;
+            }
+            public int time, y;
+        };
+        List<Beatline> Current_BeatLines = new List<Beatline>();        // 紀錄BeatLine在圖上的Y值 及 時間
         private void MainPanel_DrawBeatLine(object sender, PaintEventArgs e)
         {
             if (!data_is_ready) return;
@@ -207,6 +218,7 @@ namespace Editor
             float x = 0.0F;
             float y;
 
+            Current_BeatLines.Clear();
             int cur_pos = Convert.ToInt32(axWindowsMediaPlayer1.Ctlcontrols.currentPosition * 1000);
             for (int i = 2900; i > 0; i -= BeatLength) {
                 int Cur_Line = Convert.ToInt32(cur_pos / BeatLength) * BeatLength + 2900 - i;
@@ -223,8 +235,40 @@ namespace Editor
                     pen.Width = 5;
                 }
                 y = i;
-                e.Graphics.DrawString(drawString, drawFont, drawBrush, x, cur_pos % BeatLength + y + 2, drawFormat);
+                Current_BeatLines.Add( new Beatline( Cur_Line, Convert.ToInt32(cur_pos % BeatLength + y)) );
                 e.Graphics.DrawLine(pen, 0, cur_pos % BeatLength + y, MainPanel.Width, cur_pos % BeatLength + y);
+
+                int index = NoteList.FindIndex(x1 => x1.pos == Cur_Line);
+                Console.WriteLine("DrawNoteIndex:" + index.ToString());
+                if (index >= 0)
+                {
+                    int l = NoteList[index].first;
+                    int r = NoteList[index].last;
+                    Console.WriteLine("CurrentTime: " + NoteList[index].pos.ToString() + " left:" + l.ToString() + 
+                        " right:" + r.ToString());
+                    ///
+                    // 畫出選取範圍
+                    ///
+                    pen.Color = System.Drawing.Color.Coral;
+                    e.Graphics.DrawLine(pen, l * MainPanel.Width / 16, cur_pos % BeatLength + y, r * MainPanel.Width / 16, cur_pos % BeatLength + y);
+                    ///
+                    //  畫出Note
+                    ///
+                    switch (NoteList[index].type) 
+                    {
+                        case 0:
+                            e.Graphics.DrawString("0", drawFont, drawBrush, (l+r) / 2 * MainPanel.Width, cur_pos % BeatLength + y - 3, drawFormat);
+                            break;
+                        case 1:
+                            e.Graphics.DrawString("1", drawFont, drawBrush, (l + r) / 2 * MainPanel.Width, cur_pos % BeatLength + y - 3, drawFormat);
+                            break;
+                        case 2:
+                            e.Graphics.DrawString("2", drawFont, drawBrush, (l + r) / 2 * MainPanel.Width, cur_pos % BeatLength + y - 3, drawFormat);
+                            break;
+                    }
+                }
+                
+                e.Graphics.DrawString(drawString, drawFont, drawBrush, x, cur_pos % BeatLength + y + 2, drawFormat);
             }
 
             pen.Dispose();
@@ -274,9 +318,7 @@ namespace Editor
         private void MainPanel_Click(object sender, EventArgs e)
         {
             Point point   = MainPanel.PointToClient(Cursor.Position);
-            // Note  current = new Note();
-            //MessageBox.Show((MainPanel.Height - point.Y).ToString());
-            MessageBox.Show(point.Y.ToString());
+            // MessageBox.Show(point.X.ToString());
             MainPanel_Background.Refresh();
         }
 		private void MainPanel_Paint(object sender, PaintEventArgs e)
@@ -297,11 +339,53 @@ namespace Editor
             ProgressBar.Height = Convert.ToInt32(Convert.ToDouble(ProgressBar_Background.Height) * axWindowsMediaPlayer1.Ctlcontrols.currentPosition / axWindowsMediaPlayer1.Ctlcontrols.currentItem.duration);
             Refresh_Layout();
         }
-		
-		///
-		// Yabadado
-		///
-		private void button6_Click(object sender, EventArgs e)
+        bool isEditting = false;
+        int point_x,point_y;
+        private void MainPanel_MouseDown(object sender, MouseEventArgs me)
+        {
+            if (!isLoaded || !data_is_ready) return;
+            isEditting = true;
+            point_x = me.X;
+            point_y = me.Y;
+        }
+        private void MainPanel_MouseMove(object sender, MouseEventArgs me)
+        {
+            if (!isLoaded || !data_is_ready) return;
+            if (isEditting) 
+            {
+                // 1. 先找出 所選擇到的BeatLine , 找出BeatLine在圖上的位置 和 point_y 做比對
+                int selectline = 0 ; 
+                foreach  (Beatline cur_beatline in Current_BeatLines)
+                {
+                    if (cur_beatline.y < point_y) break;
+                    selectline++;
+                }
+                Console.WriteLine(Current_BeatLines[selectline].time.ToString());
+                // 2. 找出所有橫跨的行  left~right  (0~15)
+                int time  = Current_BeatLines[selectline].time; 
+                int left  = point_x / (MainPanel.Width / 16);
+                int right = me.X    / (MainPanel.Width / 16);
+
+                int index = NoteList.FindIndex(x => x.pos == time);
+                if (index >= 0)
+                {
+                    Console.WriteLine("ClearNoteIndex:" + index.ToString());
+                    NoteList.RemoveAt(index);
+                }
+                NoteList.Add( new Note(time, 0, left, right) );
+                Console.WriteLine("ListCount: " + NoteList.Count.ToString());
+                MainPanel.Refresh();
+            }
+        }
+        private void MainPanel_MouseUp(object sender, MouseEventArgs me)
+        {
+            if (!isLoaded || !data_is_ready) return;
+            isEditting = false;
+        }
+        ///
+        // Yabadado
+        ///
+        private void button6_Click(object sender, EventArgs e)
         {
             //create data
             //click
@@ -333,7 +417,7 @@ namespace Editor
             }
 
         }
-         private void Settings_Click(object sender, EventArgs e)
+        private void Settings_Click(object sender, EventArgs e)
         {
             SetForm = new SubForm_setting();            
             SetForm.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SetForm_Closing);

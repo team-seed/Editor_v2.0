@@ -152,6 +152,9 @@
             this.MainPanel.Click += new System.EventHandler(this.MainPanel_Click);
             this.MainPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.MainPanel_Paint);
             this.MainPanel.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.MainPanel_MouseWheel);
+            this.MainPanel.MouseDown  += new System.Windows.Forms.MouseEventHandler(this.MainPanel_MouseDown);
+            this.MainPanel.MouseMove  += new System.Windows.Forms.MouseEventHandler(this.MainPanel_MouseMove);
+            this.MainPanel.MouseUp    += new System.Windows.Forms.MouseEventHandler(this.MainPanel_MouseUp);
             // 
             // ProgressBar_Bottom
             // 
