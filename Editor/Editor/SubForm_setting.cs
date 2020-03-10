@@ -16,11 +16,12 @@ namespace Editor
 
         //private Control _F1 = new Control();
 
+        public bool set_ready;
         public SubForm_setting()
         {
+            set_ready = false;
             InitializeComponent();
         }
-        public bool set_ready;
 
         public void SetData(ref double bpm, ref double offset, ref int beat) {
             bpm = Convert.ToDouble(textBox1.Text);
@@ -35,8 +36,15 @@ namespace Editor
             if (double.TryParse(textBox1.Text, out a) && double.TryParse(textBox2.Text, out b)
                 && int.TryParse(textBox3.Text, out c))
             {
-                set_ready = true;
-                Close();                
+                if (a >= 0)
+                {
+                    set_ready = true;
+                    Close();
+                }
+                else
+                {
+                    MessageBox.Show("BPM must be positive");
+                }
             }
             else
                 MessageBox.Show("請輸入數字");

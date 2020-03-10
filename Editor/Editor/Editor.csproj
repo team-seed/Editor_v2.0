@@ -64,7 +64,9 @@
     <Compile Include="SubForm_setting.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SubForm_setting.Designer.cs" />
+    <Compile Include="SubForm_setting.Designer.cs">
+	  <DependentUpon>SubForm_setting.cs</DependentUpon>
+	</Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -77,6 +79,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="SubForm_setting.resx">
+      <DependentUpon>SubForm_setting.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\Form1.datasource" />
     <None Include="Properties\Settings.settings">

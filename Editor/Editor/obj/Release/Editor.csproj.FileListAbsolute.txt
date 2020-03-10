@@ -32,3 +32,4 @@ C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\obj\Release\Editor.exe
 C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\obj\Release\Editor.pdb
 C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\bin\Release\Newtonsoft.Json.dll
 C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\bin\Release\Newtonsoft.Json.xml
+C:\Users\Sam\Documents\GitHub\Editor_v2.0\Editor\Editor\obj\Release\Editor.SubForm_setting.resources

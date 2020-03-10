@@ -47,8 +47,8 @@
             this.axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
             this.flowLayoutPanel1.SuspendLayout();
+            this.MainPanel.SuspendLayout();
             this.ProgressBar_Bottom.SuspendLayout();
             this.ProgressBar_Background.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).BeginInit();
@@ -126,13 +126,14 @@
             // MainPanel_Background
             // 
             this.MainPanel_Background.AllowDrop = true;
-            this.MainPanel_Background.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.MainPanel_Background.BackColor = System.Drawing.Color.White;
+            this.MainPanel_Background.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.MainPanel_Background.BackColor = System.Drawing.Color.Transparent;
             this.MainPanel_Background.Enabled = false;
             this.MainPanel_Background.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.MainPanel_Background.Location = new System.Drawing.Point(760, 33);
+            this.MainPanel_Background.Location = new System.Drawing.Point(0, 0);
             this.MainPanel_Background.Name = "MainPanel_Background";
-            this.MainPanel_Background.Size = new System.Drawing.Size(10, 40);
+            this.MainPanel_Background.Size = new System.Drawing.Size(420, 3000);
             this.MainPanel_Background.TabIndex = 1;
             this.MainPanel_Background.Paint += new System.Windows.Forms.PaintEventHandler(this.MainPanel_Background_Paint);
             // 
@@ -141,14 +142,14 @@
             this.MainPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.MainPanel.AutoScroll = true;
-            this.MainPanel.BackColor = System.Drawing.Color.LightGray;
-            this.MainPanel.Location = new System.Drawing.Point(90, 70);
+            this.MainPanel.BackColor = System.Drawing.Color.White;
+            this.MainPanel.Controls.Add(this.MainPanel_Background);
+            this.MainPanel.Location = new System.Drawing.Point(90, -2300);
             this.MainPanel.Name = "MainPanel";
-            this.MainPanel.Size = new System.Drawing.Size(420, 10000);
+            this.MainPanel.Size = new System.Drawing.Size(420, 3000);
             this.MainPanel.TabIndex = 0;
             this.MainPanel.Click += new System.EventHandler(this.MainPanel_Click);
             this.MainPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.MainPanel_Paint);
-            this.MainPanel.Move += new System.EventHandler(this.MainPanel_Move);
             // 
             // ProgressBar_Bottom
             // 
@@ -156,7 +157,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ProgressBar_Bottom.BackColor = System.Drawing.Color.Transparent;
             this.ProgressBar_Bottom.Controls.Add(this.music_duration);
-            this.ProgressBar_Bottom.Controls.Add(this.music_position);
             this.ProgressBar_Bottom.Location = new System.Drawing.Point(556, 30);
             this.ProgressBar_Bottom.Name = "ProgressBar_Bottom";
             this.ProgressBar_Bottom.Size = new System.Drawing.Size(40, 685);
@@ -179,7 +179,7 @@
             // 
             this.music_position.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.music_position.AutoSize = true;
-            this.music_position.Location = new System.Drawing.Point(3, 670);
+            this.music_position.Location = new System.Drawing.Point(553, 700);
             this.music_position.Name = "music_position";
             this.music_position.Size = new System.Drawing.Size(0, 15);
             this.music_position.TabIndex = 5;
@@ -208,14 +208,16 @@
             // 
             // music
             // 
+            this.music.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.music.AutoSize = true;
-            this.music.Location = new System.Drawing.Point(70, 12);
+            this.music.Location = new System.Drawing.Point(630, 9);
             this.music.Name = "music";
             this.music.Size = new System.Drawing.Size(0, 15);
             this.music.TabIndex = 4;
             // 
             // axWindowsMediaPlayer1
             // 
+            this.axWindowsMediaPlayer1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.axWindowsMediaPlayer1.Enabled = true;
             this.axWindowsMediaPlayer1.Location = new System.Drawing.Point(760, 12);
             this.axWindowsMediaPlayer1.Name = "axWindowsMediaPlayer1";
@@ -233,37 +235,27 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.panel1.Location = new System.Drawing.Point(90, 688);
+            this.panel1.Location = new System.Drawing.Point(90, 700);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(421, 75);
+            this.panel1.Size = new System.Drawing.Size(421, 63);
             this.panel1.TabIndex = 7;
-            // 
-            // panel2
-            // 
-            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.panel2.Location = new System.Drawing.Point(90, -2);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(420, 72);
-            this.panel2.TabIndex = 8;
             // 
             // Form1
             // 
             this.BackColor = System.Drawing.SystemColors.ControlDark;
             this.ClientSize = new System.Drawing.Size(782, 753);
             this.Controls.Add(this.music);
-            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.music_position);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.MainPanel);
             this.Controls.Add(this.axWindowsMediaPlayer1);
             this.Controls.Add(this.ProgressBar_Background);
             this.Controls.Add(this.ProgressBar_Bottom);
-            this.Controls.Add(this.MainPanel_Background);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Name = "Form1";
             this.SizeChanged += new System.EventHandler(this.form1_SizeChanged);
             this.flowLayoutPanel1.ResumeLayout(false);
+            this.MainPanel.ResumeLayout(false);
             this.ProgressBar_Bottom.ResumeLayout(false);
             this.ProgressBar_Bottom.PerformLayout();
             this.ProgressBar_Background.ResumeLayout(false);
@@ -292,7 +284,6 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label music_duration;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Panel panel2;
     }
 }
 

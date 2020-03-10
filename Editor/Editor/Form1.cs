@@ -32,7 +32,7 @@ namespace Editor
         List<Note> NoteList=new List<Note>();
         double bpm, offset;
         int beat;
-        bool set_ready;
+        bool data_is_ready = false;
         SubForm_setting SetForm;
 		
         bool isDragging = false;
@@ -50,6 +50,7 @@ namespace Editor
         ///
         // Music Control
         ///
+        bool First_Setting = false;
         private void SelectMusic_Click(object sender, EventArgs e)
         {
             OpenFileDialog file = new OpenFileDialog();
@@ -58,6 +59,10 @@ namespace Editor
             if (file.ShowDialog() == DialogResult.OK) {
                 axWindowsMediaPlayer1.URL = file.FileName;
                 music.Text = file.FileName;
+                string [] temp = music.Text.Split('\\');
+                music.Text = temp[temp.Length - 2];
+
+                First_Setting = true;
                 isLoaded = true;
                 axWindowsMediaPlayer1.Ctlcontrols.play();
             }
@@ -83,20 +88,15 @@ namespace Editor
             }
 
         }
-        int MainPanel_BasePosition; 
         private void axWindowsMediaPlayer1_PlayStateChange(object sender, AxWMPLib._WMPOCXEvents_PlayStateChangeEvent e)
         {
             if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsPlaying)
             {
-                if (ProgressBar.Height == 0)
+                if (First_Setting)
                 {
-                    int ExtendedHeight = Convert.ToInt32(axWindowsMediaPlayer1.Ctlcontrols.currentItem.duration * 1000) - MainPanel.Height; 
-                    MainPanel.Height = Convert.ToInt32(axWindowsMediaPlayer1.Ctlcontrols.currentItem.duration * 1000);
-                    MainPanel.Location = new Point(MainPanel.Location.X,MainPanel.Location.Y + ExtendedHeight);
-                    MainPanel_BasePosition = MainPanel.Location.Y + ExtendedHeight;
-                    //MessageBox.Show(MainPanel_BasePosition.ToString());
                     music_duration.Text = axWindowsMediaPlayer1.Ctlcontrols.currentItem.durationString;
                     axWindowsMediaPlayer1.Ctlcontrols.pause();
+                    First_Setting = false;
                 }
                 axWindowsMediaPlayer1.Ctlcontrols.currentPosition = axWindowsMediaPlayer1.Ctlcontrols.currentItem.duration * ProgressBar.Height / ProgressBar_Background.Height;
                 timer1.Start();
@@ -116,58 +116,44 @@ namespace Editor
             if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsPlaying)
             {
                 ProgressBar.Height = Convert.ToInt32(Convert.ToDouble(ProgressBar_Background.Height) * axWindowsMediaPlayer1.Ctlcontrols.currentPosition / axWindowsMediaPlayer1.Ctlcontrols.currentItem.duration);
-                music_position.Text = axWindowsMediaPlayer1.Ctlcontrols.currentPositionString;
+                Refresh_Layout();
             }
         }
         ///
         // MusicProgressBar
         ///
-        private void MoveMainPanel(int progressMove) 
-        { 
-            Point newPoint = MainPanel.Location;
-            if (ProgressBar.Height == 0)
-            {
-                MainPanel.Location = new Point(newPoint.X, MainPanel_BasePosition);
-                return;
-            }
-            int MoveDistance = MainPanel.Height * progressMove / ProgressBar.Height;
-            newPoint = new Point(newPoint.X, newPoint.Y + MoveDistance);
-            MainPanel.Location = newPoint;
+
+        private void Refresh_Layout() 
+        {
+            MainPanel.Refresh();
+            music_position.Text = axWindowsMediaPlayer1.Ctlcontrols.currentPositionString;
+            music_position.Text += "\n" + (axWindowsMediaPlayer1.Ctlcontrols.currentPosition * 1000).ToString();
         }
         private void ProgressBar_Bottom_MouseWheel(object sender, MouseEventArgs me)
         {
-            int Delta_Y;
             if (!isLoaded) return;   
             if (me.Delta > 0)
             {
-                Delta_Y = 2;
                 ProgressBar.Height += 2;
                 if (ProgressBar.Height > ProgressBar_Background.Height) ProgressBar.Height = ProgressBar_Background.Height;
             }
             else
             {
-                Delta_Y = -2;
                 ProgressBar.Height -= 2;
             }
             axWindowsMediaPlayer1.Ctlcontrols.currentPosition = axWindowsMediaPlayer1.Ctlcontrols.currentItem.duration * ProgressBar.Height / ProgressBar_Background.Height;
-            music_position.Text = axWindowsMediaPlayer1.Ctlcontrols.currentPositionString;
-            MoveMainPanel(Delta_Y);
+            Refresh_Layout();
         }
         private void ProgressBar_Bottom_MouseClick(object sender, MouseEventArgs me)
         {
             if (!isLoaded) return;
-            int Delta_Y;
-            Delta_Y = ProgressBar.Height;
             ProgressBar.Height = ProgressBar_Background.Height - me.Y + 20;
-            if (ProgressBar.Height > ProgressBar_Background.Height) ProgressBar.Height = ProgressBar_Background.Height;
-            Delta_Y = ProgressBar.Height - Delta_Y;
             if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsStopped)
             {
                 axWindowsMediaPlayer1.Ctlcontrols.play();
             }
             axWindowsMediaPlayer1.Ctlcontrols.currentPosition = axWindowsMediaPlayer1.Ctlcontrols.currentItem.duration * ProgressBar.Height / ProgressBar_Background.Height;
-            music_position.Text = axWindowsMediaPlayer1.Ctlcontrols.currentPositionString;
-            MoveMainPanel(Delta_Y);
+            Refresh_Layout();
         }
         private void ProgressBar_Bottom_MouseDown(object sender, MouseEventArgs me)
         {
@@ -179,18 +165,13 @@ namespace Editor
             if (!isLoaded) return;
             if (isDragging)
             {
-                int Delta_Y;
-                Delta_Y = ProgressBar.Height;
                 ProgressBar.Height = ProgressBar_Background.Height - me.Y + 20;
-                if (ProgressBar.Height > ProgressBar_Background.Height) ProgressBar.Height = ProgressBar_Background.Height;
-                Delta_Y = ProgressBar.Height - Delta_Y;
                 if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsStopped)
                 {
                     axWindowsMediaPlayer1.Ctlcontrols.play();
                 }
                 axWindowsMediaPlayer1.Ctlcontrols.currentPosition = axWindowsMediaPlayer1.Ctlcontrols.currentItem.duration * ProgressBar.Height / ProgressBar_Background.Height;
-                music_position.Text = axWindowsMediaPlayer1.Ctlcontrols.currentPositionString;
-                MoveMainPanel(Delta_Y);
+                Refresh_Layout();
             }
         }
         private void ProgressBar_Bottom_MouseUp(object sender, MouseEventArgs me)
@@ -202,40 +183,81 @@ namespace Editor
         ///
         // MainPanel
         ///
-        /// 令MainPanel 高度為8個Beats
+        /// 令MainPanel 高度為 3000 , 顯示出的範圍約700ms 
         /// 隨著ProgressBar , 計算出當前Panel上應該要顯示出的畫面 
         /// 
-        private void MainPanel_SetHeight()
-        {
-            //int BeatLength = 60 / bpm * 1000;   // 計算出 1個Beat花多少 ms   
-        }
         private void MainPanel_DrawBeatLine(object sender, PaintEventArgs e)
         {
-            // System.Drawing.Graphics formGraphics = this.CreateGraphics();
-            System.Drawing.Font drawFont = new System.Drawing.Font("Arial", 16);
+            if (!data_is_ready) return;
+            if (bpm == 0) return;
+            int BeatLength = Convert.ToInt32( 60 / bpm * 1000);
+
+            System.Drawing.Pen pen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(255, 0, 0, 0), 5);
+            System.Drawing.Font drawFont = new System.Drawing.Font("Arial", 10);
             System.Drawing.SolidBrush drawBrush = new System.Drawing.SolidBrush(System.Drawing.Color.Black);
             System.Drawing.StringFormat drawFormat = new System.Drawing.StringFormat();
-            float x = 90.0F;
-            float y = 50.0F;
-            for (int i = 0; i < MainPanel.Height; i += 500) {
-                string drawString = i.ToString();
+            float x = 0.0F;
+            float y;
+
+            int cur_pos = Convert.ToInt32(axWindowsMediaPlayer1.Ctlcontrols.currentPosition * 1000);
+            for (int i = 2900; i > 0; i -= BeatLength) {
+                int Cur_Line = Convert.ToInt32(cur_pos / BeatLength) * BeatLength + 2900 - i;
+                string drawString = Cur_Line.ToString();
+
+                if (beat != 0 && (Cur_Line / BeatLength) % beat == 0)
+                {
+                    pen.Color = System.Drawing.Color.FromArgb(180, 40, 100, 100);
+                    pen.Width = 8;
+                }
+                else 
+                {
+                    pen.Color = System.Drawing.Color.FromArgb(255, 0, 0, 0);
+                    pen.Width = 5;
+                }
                 y = i;
-                e.Graphics.DrawString(drawString, drawFont, drawBrush, x, MainPanel.Height - y, drawFormat);
+                e.Graphics.DrawString(drawString, drawFont, drawBrush, x, cur_pos % BeatLength + y + 2, drawFormat);
+                e.Graphics.DrawLine(pen, 0, cur_pos % BeatLength + y, MainPanel.Width, cur_pos % BeatLength + y);
             }
+
+            pen.Dispose();
+            drawFormat.Dispose();
             drawFont.Dispose();
             drawBrush.Dispose();
         }
         private void MainPanel_Background_Paint(object sender, PaintEventArgs e)
         {
             //畫線
-            System.Drawing.Pen pen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(255, 0, 0, 0),5);
-            e.Graphics.DrawLine(pen, 1 * MainPanel_Background.Width / 4, 0, 1 * MainPanel_Background.Width / 4, MainPanel_Background.Height);
-            e.Graphics.DrawLine(pen, 2 * MainPanel_Background.Width / 4, 0, 2 * MainPanel_Background.Width / 4, MainPanel_Background.Height);
-            e.Graphics.DrawLine(pen, 3 * MainPanel_Background.Width / 4, 0, 3 * MainPanel_Background.Width / 4, MainPanel_Background.Height);
-            e.Graphics.DrawLine(pen, 0, MainPanel_Background.Height * 6 / 7 , MainPanel_Background.Width, MainPanel_Background.Height * 6 / 7);
 
-            System.Drawing.SolidBrush myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.Red);
-            // e.Graphics.FillEllipse(myBrush, new Rectangle(point.X, point.Y, 20, 20));
+            System.Drawing.Pen pen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(255, 0, 0, 0),5);
+            int mpw = MainPanel_Background.Width;
+            int mph = MainPanel_Background.Height;
+            e.Graphics.DrawLine(pen, 1 * mpw / 4, 0, 1 * mpw / 4, mph);
+            e.Graphics.DrawLine(pen, 2 * mpw / 4, 0, 2 * mpw / 4, mph);
+            e.Graphics.DrawLine(pen, 3 * mpw / 4, 0, 3 * mpw / 4, mph);
+
+            pen.Color = System.Drawing.Color.FromArgb(180, 200, 100, 100);
+            pen.Width = 10;
+            e.Graphics.DrawLine(pen, 0, 2900, mpw, 2900);
+
+            pen.Color = System.Drawing.Color.FromArgb(100, 200, 100, 100); ;
+            pen.Width = 1;
+            e.Graphics.DrawLine(pen, 1 * mpw / 16, 0, 1 * mpw / 16, mph);
+            e.Graphics.DrawLine(pen, 2 * mpw / 16, 0, 2 * mpw / 16, mph);
+            e.Graphics.DrawLine(pen, 3 * mpw / 16, 0, 3 * mpw / 16, mph);
+
+            e.Graphics.DrawLine(pen, 5 * mpw / 16, 0, 5 * mpw / 16, mph);
+            e.Graphics.DrawLine(pen, 6 * mpw / 16, 0, 6 * mpw / 16, mph);
+            e.Graphics.DrawLine(pen, 7 * mpw / 16, 0, 7 * mpw / 16, mph);
+
+            e.Graphics.DrawLine(pen,  9 * mpw / 16, 0,  9 * mpw / 16, mph);
+            e.Graphics.DrawLine(pen, 10 * mpw / 16, 0, 10 * mpw / 16, mph);
+            e.Graphics.DrawLine(pen, 11 * mpw / 16, 0, 11 * mpw / 16, mph);
+
+            e.Graphics.DrawLine(pen, 13 * mpw / 16, 0, 13 * mpw / 16, mph);
+            e.Graphics.DrawLine(pen, 14 * mpw / 16, 0, 14 * mpw / 16, mph);
+            e.Graphics.DrawLine(pen, 15 * mpw / 16, 0, 15 * mpw / 16, mph);
+
+            pen.Dispose();
         }
         private void MainPanel_Click(object sender, EventArgs e)
         {
@@ -247,14 +269,9 @@ namespace Editor
         }
 		private void MainPanel_Paint(object sender, PaintEventArgs e)
         {
-            MainPanel_DrawBeatLine(sender, e);
+            if(isLoaded)  MainPanel_DrawBeatLine(sender, e);
         }
 
-        private void MainPanel_Move(object sender, EventArgs e)
-        {
-            //MessageBox.Show("move");
-            MainPanel.Refresh();
-        }
 		
 		///
 		// Yabadado
@@ -300,10 +317,13 @@ namespace Editor
         private void SetForm_Closing(object sender, EventArgs e) {
             if (SetForm.set_ready == true)
             {
+                data_is_ready = true;
                 SetForm.SetData(ref bpm, ref offset, ref beat);
+                MainPanel.Refresh();
                 MessageBox.Show("Set Done!");
             }
-            else {
+            else
+            {
                 MessageBox.Show("Set Failed!");
             }
         }
