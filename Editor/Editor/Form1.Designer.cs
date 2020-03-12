@@ -37,8 +37,6 @@
             this.Settings = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
-            this.MainPanel_Background = new  BackgroundPanel();
-            this.MainPanel = new BackgroundPanel();
             this.ProgressBar_Bottom = new System.Windows.Forms.Panel();
             this.music_duration = new System.Windows.Forms.Label();
             this.music_position = new System.Windows.Forms.Label();
@@ -47,12 +45,23 @@
             this.music = new System.Windows.Forms.Label();
             this.axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.BottomPanel = new System.Windows.Forms.Panel();
+            this.Unlink = new System.Windows.Forms.Button();
+            this.Link = new System.Windows.Forms.Button();
+            this.Swipe = new System.Windows.Forms.Button();
+            this.Left = new System.Windows.Forms.Button();
+            this.Up = new System.Windows.Forms.Button();
+            this.Right = new System.Windows.Forms.Button();
+            this.Down = new System.Windows.Forms.Button();
+            this.Hold = new System.Windows.Forms.Button();
+            this.Click = new System.Windows.Forms.Button();
+            this.MainPanel = new Editor.BackgroundPanel();
+            this.MainPanel_Background = new Editor.BackgroundPanel();
             this.flowLayoutPanel1.SuspendLayout();
-            this.MainPanel.SuspendLayout();
             this.ProgressBar_Bottom.SuspendLayout();
             this.ProgressBar_Background.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).BeginInit();
+            this.MainPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // flowLayoutPanel1
@@ -123,38 +132,6 @@
             this.button6.Text = "button6";
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
-            // 
-            // MainPanel_Background
-            // 
-            this.MainPanel_Background.AllowDrop = true;
-            this.MainPanel_Background.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.MainPanel_Background.BackColor = System.Drawing.Color.Transparent;
-            this.MainPanel_Background.Enabled = false;
-            this.MainPanel_Background.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.MainPanel_Background.Location = new System.Drawing.Point(0, 0);
-            this.MainPanel_Background.Name = "MainPanel_Background";
-            this.MainPanel_Background.Size = new System.Drawing.Size(420, 3000);
-            this.MainPanel_Background.TabIndex = 1;
-            this.MainPanel_Background.Paint += new System.Windows.Forms.PaintEventHandler(this.MainPanel_Background_Paint);
-            // 
-            // MainPanel
-            // 
-            this.MainPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.MainPanel.AutoScroll = true;
-            this.MainPanel.BackColor = System.Drawing.Color.White;
-            this.MainPanel.Controls.Add(this.MainPanel_Background);
-            this.MainPanel.Location = new System.Drawing.Point(90, -2300);
-            this.MainPanel.Name = "MainPanel";
-            this.MainPanel.Size = new System.Drawing.Size(420, 3000);
-            this.MainPanel.TabIndex = 0;
-            this.MainPanel.Click += new System.EventHandler(this.MainPanel_Click);
-            this.MainPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.MainPanel_Paint);
-            this.MainPanel.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.MainPanel_MouseWheel);
-            this.MainPanel.MouseDown  += new System.Windows.Forms.MouseEventHandler(this.MainPanel_MouseDown);
-            this.MainPanel.MouseMove  += new System.Windows.Forms.MouseEventHandler(this.MainPanel_MouseMove);
-            this.MainPanel.MouseUp    += new System.Windows.Forms.MouseEventHandler(this.MainPanel_MouseUp);
             // 
             // ProgressBar_Bottom
             // 
@@ -236,23 +213,165 @@
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // panel1
+            // BottomPanel
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.BottomPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.panel1.Location = new System.Drawing.Point(90, 700);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(421, 63);
-            this.panel1.TabIndex = 7;
+            this.BottomPanel.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.BottomPanel.Location = new System.Drawing.Point(90, 700);
+            this.BottomPanel.Name = "BottomPanel";
+            this.BottomPanel.Size = new System.Drawing.Size(421, 63);
+            this.BottomPanel.TabIndex = 7;
+            // 
+            // Unlink
+            // 
+            this.Unlink.BackColor = System.Drawing.Color.Aquamarine;
+            this.Unlink.Image = global::Editor.Properties.Resources.unlink;
+            this.Unlink.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.Unlink.Location = new System.Drawing.Point(25, 100);
+            this.Unlink.Name = "Unlink";
+            this.Unlink.Size = new System.Drawing.Size(32, 32);
+            this.Unlink.TabIndex = 16;
+            this.Unlink.UseVisualStyleBackColor = false;
+            // 
+            // Link
+            // 
+            this.Link.BackColor = System.Drawing.Color.Aquamarine;
+            this.Link.Image = global::Editor.Properties.Resources.link_1_;
+            this.Link.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.Link.Location = new System.Drawing.Point(25, 100);
+            this.Link.Name = "Link";
+            this.Link.Size = new System.Drawing.Size(32, 32);
+            this.Link.TabIndex = 15;
+            this.Link.UseVisualStyleBackColor = false;
+            // 
+            // Swipe
+            // 
+            this.Swipe.BackColor = System.Drawing.Color.Gray;
+            this.Swipe.Image = global::Editor.Properties.Resources.swipe;
+            this.Swipe.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.Swipe.Location = new System.Drawing.Point(25, 150);
+            this.Swipe.Name = "Swipe";
+            this.Swipe.Size = new System.Drawing.Size(32, 32);
+            this.Swipe.TabIndex = 10;
+            this.Swipe.UseVisualStyleBackColor = false;
+            this.Swipe.Click += new System.EventHandler(this.Swipe_Click);
+            // 
+            // Left
+            // 
+            this.Left.BackColor = System.Drawing.Color.Aquamarine;
+            this.Left.Enabled = false;
+            this.Left.Image = global::Editor.Properties.Resources.left;
+            this.Left.Location = new System.Drawing.Point(25, 150);
+            this.Left.Name = "Left";
+            this.Left.Size = new System.Drawing.Size(32, 32);
+            this.Left.TabIndex = 14;
+            this.Left.UseVisualStyleBackColor = false;
+            // 
+            // Up
+            // 
+            this.Up.BackColor = System.Drawing.Color.Aquamarine;
+            this.Up.Enabled = false;
+            this.Up.Image = global::Editor.Properties.Resources.up;
+            this.Up.Location = new System.Drawing.Point(25, 150);
+            this.Up.Name = "Up";
+            this.Up.Size = new System.Drawing.Size(32, 32);
+            this.Up.TabIndex = 13;
+            this.Up.UseVisualStyleBackColor = false;
+            // 
+            // Right
+            // 
+            this.Right.BackColor = System.Drawing.Color.Aquamarine;
+            this.Right.Enabled = false;
+            this.Right.Image = global::Editor.Properties.Resources.right;
+            this.Right.Location = new System.Drawing.Point(25, 150);
+            this.Right.Name = "Right";
+            this.Right.Size = new System.Drawing.Size(32, 32);
+            this.Right.TabIndex = 12;
+            this.Right.UseVisualStyleBackColor = false;
+            // 
+            // Down
+            // 
+            this.Down.BackColor = System.Drawing.Color.Aquamarine;
+            this.Down.Enabled = false;
+            this.Down.Image = global::Editor.Properties.Resources.download;
+            this.Down.Location = new System.Drawing.Point(25, 150);
+            this.Down.Name = "Down";
+            this.Down.Size = new System.Drawing.Size(32, 32);
+            this.Down.TabIndex = 11;
+            this.Down.UseVisualStyleBackColor = false;
+            // 
+            // Hold
+            // 
+            this.Hold.BackColor = System.Drawing.Color.Gray;
+            this.Hold.Image = global::Editor.Properties.Resources.hold;
+            this.Hold.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.Hold.Location = new System.Drawing.Point(25, 100);
+            this.Hold.Name = "Hold";
+            this.Hold.Size = new System.Drawing.Size(32, 32);
+            this.Hold.TabIndex = 9;
+            this.Hold.UseVisualStyleBackColor = false;
+            this.Hold.Click += new System.EventHandler(this.Hold_Click);
+            // 
+            // Click
+            // 
+            this.Click.BackColor = System.Drawing.Color.Aquamarine;
+            this.Click.Image = global::Editor.Properties.Resources.click_2_;
+            this.Click.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.Click.Location = new System.Drawing.Point(25, 50);
+            this.Click.Name = "Click";
+            this.Click.Size = new System.Drawing.Size(32, 32);
+            this.Click.TabIndex = 8;
+            this.Click.UseVisualStyleBackColor = false;
+            this.Click.Click += new System.EventHandler(this.Click_Click);
+            // 
+            // MainPanel
+            // 
+            this.MainPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.MainPanel.BackColor = System.Drawing.Color.White;
+            this.MainPanel.Controls.Add(this.MainPanel_Background);
+            this.MainPanel.Location = new System.Drawing.Point(90, -2300);
+            this.MainPanel.Name = "MainPanel";
+            this.MainPanel.Size = new System.Drawing.Size(420, 5000);
+            this.MainPanel.TabIndex = 0;
+            this.MainPanel.Click += new System.EventHandler(this.MainPanel_Click);
+            this.MainPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.MainPanel_Paint);
+            this.MainPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MainPanel_MouseDown);
+            this.MainPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MainPanel_MouseMove);
+            this.MainPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MainPanel_MouseUp);
+            this.MainPanel.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.MainPanel_MouseWheel);
+            // 
+            // MainPanel_Background
+            // 
+            this.MainPanel_Background.AllowDrop = true;
+            this.MainPanel_Background.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.MainPanel_Background.BackColor = System.Drawing.Color.Transparent;
+            this.MainPanel_Background.Enabled = false;
+            this.MainPanel_Background.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.MainPanel_Background.Location = new System.Drawing.Point(0, 0);
+            this.MainPanel_Background.Name = "MainPanel_Background";
+            this.MainPanel_Background.Size = new System.Drawing.Size(421, 5000);
+            this.MainPanel_Background.TabIndex = 1;
+            this.MainPanel_Background.Paint += new System.Windows.Forms.PaintEventHandler(this.MainPanel_Background_Paint);
             // 
             // Form1
             // 
             this.BackColor = System.Drawing.SystemColors.ControlDark;
             this.ClientSize = new System.Drawing.Size(782, 753);
+            this.Controls.Add(this.Hold);
+            this.Controls.Add(this.Unlink);
+            this.Controls.Add(this.Link);
+            this.Controls.Add(this.Swipe);
+            this.Controls.Add(this.Left);
+            this.Controls.Add(this.Up);
+            this.Controls.Add(this.Right);
+            this.Controls.Add(this.Down);
+            this.Controls.Add(this.Click);
             this.Controls.Add(this.music);
             this.Controls.Add(this.music_position);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.BottomPanel);
             this.Controls.Add(this.MainPanel);
             this.Controls.Add(this.axWindowsMediaPlayer1);
             this.Controls.Add(this.ProgressBar_Background);
@@ -260,12 +379,13 @@
             this.Controls.Add(this.flowLayoutPanel1);
             this.Name = "Form1";
             this.SizeChanged += new System.EventHandler(this.form1_SizeChanged);
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
             this.flowLayoutPanel1.ResumeLayout(false);
-            this.MainPanel.ResumeLayout(false);
             this.ProgressBar_Bottom.ResumeLayout(false);
             this.ProgressBar_Bottom.PerformLayout();
             this.ProgressBar_Background.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).EndInit();
+            this.MainPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -279,8 +399,6 @@
         private System.Windows.Forms.Button Settings;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Panel MainPanel_Background;
-        private System.Windows.Forms.Panel MainPanel;
         private System.Windows.Forms.Panel ProgressBar_Bottom;
         private System.Windows.Forms.Panel ProgressBar_Background;
         private System.Windows.Forms.Panel ProgressBar;
@@ -289,7 +407,18 @@
         private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayer1;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label music_duration;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel BottomPanel;
+        private System.Windows.Forms.Button Click;
+        private System.Windows.Forms.Button Hold;
+        private System.Windows.Forms.Button Swipe;
+        private BackgroundPanel MainPanel_Background;
+        private BackgroundPanel MainPanel;
+        private System.Windows.Forms.Button Down;
+        private System.Windows.Forms.Button Right;
+        private System.Windows.Forms.Button Up;
+        private System.Windows.Forms.Button Left;
+        private System.Windows.Forms.Button Link;
+        private System.Windows.Forms.Button Unlink;
     }
 }
 

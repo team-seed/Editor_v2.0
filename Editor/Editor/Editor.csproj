@@ -65,8 +65,8 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="SubForm_setting.Designer.cs">
-	  <DependentUpon>SubForm_setting.cs</DependentUpon>
-	</Compile>
+      <DependentUpon>SubForm_setting.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -78,6 +78,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="SubForm_setting.resx">
       <DependentUpon>SubForm_setting.cs</DependentUpon>
@@ -115,6 +116,25 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\click%282%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\hold.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\swipe.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\unlink.png" />
+    <None Include="Resources\left.png" />
+    <None Include="Resources\up.png" />
+    <None Include="Resources\right.png" />
+    <None Include="Resources\download.png" />
+    <None Include="Resources\link.png" />
+    <None Include="Resources\link%281%29.png" />
+    <Content Include="Resources\minus%281%29.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
