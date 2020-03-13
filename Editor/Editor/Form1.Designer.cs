@@ -45,7 +45,6 @@
             this.music = new System.Windows.Forms.Label();
             this.axWindowsMediaPlayer1 = new AxWMPLib.AxWindowsMediaPlayer();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.BottomPanel = new System.Windows.Forms.Panel();
             this.Unlink = new System.Windows.Forms.Button();
             this.Link = new System.Windows.Forms.Button();
             this.Swipe = new System.Windows.Forms.Button();
@@ -55,13 +54,20 @@
             this.Down = new System.Windows.Forms.Button();
             this.Hold = new System.Windows.Forms.Button();
             this.Click = new System.Windows.Forms.Button();
+            this.Fraction_2 = new System.Windows.Forms.Label();
+            this.Fraction_3 = new System.Windows.Forms.Label();
+            this.Fraction_4 = new System.Windows.Forms.Label();
+            this.Fraction_8 = new System.Windows.Forms.Label();
             this.MainPanel = new Editor.BackgroundPanel();
             this.MainPanel_Background = new Editor.BackgroundPanel();
+            this.BottomPanel = new System.Windows.Forms.Panel();
+            this.CurrentSectionName = new System.Windows.Forms.Label();
             this.flowLayoutPanel1.SuspendLayout();
             this.ProgressBar_Bottom.SuspendLayout();
             this.ProgressBar_Background.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).BeginInit();
             this.MainPanel.SuspendLayout();
+            this.BottomPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // flowLayoutPanel1
@@ -74,9 +80,9 @@
             this.flowLayoutPanel1.Controls.Add(this.Settings);
             this.flowLayoutPanel1.Controls.Add(this.button5);
             this.flowLayoutPanel1.Controls.Add(this.button6);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(630, 30);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(630, 100);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(122, 685);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(122, 615);
             this.flowLayoutPanel1.TabIndex = 0;
             // 
             // SelectMusic
@@ -192,7 +198,7 @@
             // 
             this.music.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.music.AutoSize = true;
-            this.music.Location = new System.Drawing.Point(630, 9);
+            this.music.Location = new System.Drawing.Point(634, 59);
             this.music.Name = "music";
             this.music.Size = new System.Drawing.Size(0, 15);
             this.music.TabIndex = 4;
@@ -212,16 +218,6 @@
             // 
             this.timer1.Interval = 10;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // BottomPanel
-            // 
-            this.BottomPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.BottomPanel.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.BottomPanel.Location = new System.Drawing.Point(90, 700);
-            this.BottomPanel.Name = "BottomPanel";
-            this.BottomPanel.Size = new System.Drawing.Size(421, 63);
-            this.BottomPanel.TabIndex = 7;
             // 
             // Unlink
             // 
@@ -325,6 +321,58 @@
             this.Click.UseVisualStyleBackColor = false;
             this.Click.Click += new System.EventHandler(this.Click_Click);
             // 
+            // Fraction_2
+            // 
+            this.Fraction_2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Fraction_2.AutoSize = true;
+            this.Fraction_2.BackColor = System.Drawing.SystemColors.Control;
+            this.Fraction_2.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Fraction_2.Location = new System.Drawing.Point(633, 30);
+            this.Fraction_2.Name = "Fraction_2";
+            this.Fraction_2.Size = new System.Drawing.Size(24, 20);
+            this.Fraction_2.TabIndex = 17;
+            this.Fraction_2.Text = "½";
+            this.Fraction_2.Click += new System.EventHandler(this.Fraction_2_Click);
+            // 
+            // Fraction_3
+            // 
+            this.Fraction_3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Fraction_3.AutoSize = true;
+            this.Fraction_3.BackColor = System.Drawing.SystemColors.Control;
+            this.Fraction_3.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Fraction_3.Location = new System.Drawing.Point(658, 30);
+            this.Fraction_3.Name = "Fraction_3";
+            this.Fraction_3.Size = new System.Drawing.Size(22, 20);
+            this.Fraction_3.TabIndex = 18;
+            this.Fraction_3.Text = "⅓";
+            this.Fraction_3.Click += new System.EventHandler(this.Fraction_3_Click);
+            // 
+            // Fraction_4
+            // 
+            this.Fraction_4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Fraction_4.AutoSize = true;
+            this.Fraction_4.BackColor = System.Drawing.SystemColors.Control;
+            this.Fraction_4.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Fraction_4.Location = new System.Drawing.Point(683, 30);
+            this.Fraction_4.Name = "Fraction_4";
+            this.Fraction_4.Size = new System.Drawing.Size(24, 20);
+            this.Fraction_4.TabIndex = 19;
+            this.Fraction_4.Text = "¼";
+            this.Fraction_4.Click += new System.EventHandler(this.Fraction_4_Click);
+            // 
+            // Fraction_8
+            // 
+            this.Fraction_8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Fraction_8.AutoSize = true;
+            this.Fraction_8.BackColor = System.Drawing.SystemColors.Control;
+            this.Fraction_8.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Fraction_8.Location = new System.Drawing.Point(708, 30);
+            this.Fraction_8.Name = "Fraction_8";
+            this.Fraction_8.Size = new System.Drawing.Size(22, 20);
+            this.Fraction_8.TabIndex = 20;
+            this.Fraction_8.Text = "⅛";
+            this.Fraction_8.Click += new System.EventHandler(this.Fraction_8_Click);
+            // 
             // MainPanel
             // 
             this.MainPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -356,10 +404,37 @@
             this.MainPanel_Background.TabIndex = 1;
             this.MainPanel_Background.Paint += new System.Windows.Forms.PaintEventHandler(this.MainPanel_Background_Paint);
             // 
+            // BottomPanel
+            // 
+            this.BottomPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.BottomPanel.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.BottomPanel.Controls.Add(this.CurrentSectionName);
+            this.BottomPanel.Location = new System.Drawing.Point(90, 700);
+            this.BottomPanel.Name = "BottomPanel";
+            this.BottomPanel.Size = new System.Drawing.Size(421, 63);
+            this.BottomPanel.TabIndex = 7;
+            // 
+            // CurrentSectionName
+            // 
+            this.CurrentSectionName.AutoSize = true;
+            this.CurrentSectionName.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.CurrentSectionName.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.CurrentSectionName.Location = new System.Drawing.Point(14, 24);
+            this.CurrentSectionName.Name = "CurrentSectionName";
+            this.CurrentSectionName.Size = new System.Drawing.Size(63, 20);
+            this.CurrentSectionName.TabIndex = 17;
+            this.CurrentSectionName.Text = "Section";
+            // 
             // Form1
             // 
             this.BackColor = System.Drawing.SystemColors.ControlDark;
             this.ClientSize = new System.Drawing.Size(782, 753);
+            this.Controls.Add(this.BottomPanel);
+            this.Controls.Add(this.Fraction_8);
+            this.Controls.Add(this.Fraction_4);
+            this.Controls.Add(this.Fraction_3);
+            this.Controls.Add(this.Fraction_2);
             this.Controls.Add(this.Hold);
             this.Controls.Add(this.Unlink);
             this.Controls.Add(this.Link);
@@ -371,7 +446,6 @@
             this.Controls.Add(this.Click);
             this.Controls.Add(this.music);
             this.Controls.Add(this.music_position);
-            this.Controls.Add(this.BottomPanel);
             this.Controls.Add(this.MainPanel);
             this.Controls.Add(this.axWindowsMediaPlayer1);
             this.Controls.Add(this.ProgressBar_Background);
@@ -386,6 +460,8 @@
             this.ProgressBar_Background.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).EndInit();
             this.MainPanel.ResumeLayout(false);
+            this.BottomPanel.ResumeLayout(false);
+            this.BottomPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -419,6 +495,11 @@
         private System.Windows.Forms.Button Left;
         private System.Windows.Forms.Button Link;
         private System.Windows.Forms.Button Unlink;
+        private System.Windows.Forms.Label CurrentSectionName;
+        private System.Windows.Forms.Label Fraction_2;
+        private System.Windows.Forms.Label Fraction_3;
+        private System.Windows.Forms.Label Fraction_4;
+        private System.Windows.Forms.Label Fraction_8;
     }
 }
 

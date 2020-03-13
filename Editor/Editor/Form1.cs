@@ -53,8 +53,9 @@ namespace Editor
             }
         };
         List<Note> NoteList = new List<Note>();
-
+        int CurrentFraction = 1;
         double bpm, offset;
+        double dilation = 1;
         int CurrentType = 0;
         int CurrentDir  = 0;
         int CurrentHoldMode = 0;
@@ -234,86 +235,104 @@ namespace Editor
             public int time, y;
         };
         List<Beatline> Current_BeatLines = new List<Beatline>();        // 紀錄BeatLine在圖上的Y值 及 時間
-        private int X_Cal(double x1, double x2, int y1, int y2, int y3)
+        private int X_Cal(double x1, double x2, double y1, double y2, double y3)
         {
             double x3;
-            x3 = (y2 - y3)  * (x1 - x2) / (y2 - y1) + x2;
+            x3 = (y2 - y3) * (x1 - x2) / (y2 - y1) + x2;
             return Convert.ToInt32(x3);
         }
-        private List<int> Coordinate_Cal(int index,int toptime,int bottomtime)
+        private List<int> Coordinate_Cal(int index,double toptime,double bottomtime)
         {
             List<int> coordinate = new List<int>();
             int nextindex = NoteList.FindIndex(xn => xn.pos == NoteList[index].nextpos);
+            if (nextindex > 0)
+            {
+                double x2 = NoteList[nextindex].first * MainPanel.Width / 16;
+                double x1 = NoteList[index].first * MainPanel.Width     / 16;
+                double y2 = NoteList[nextindex].pos;
+                double y1 = NoteList[index].pos;
+                int topleft_X    = X_Cal(x1, x2, y1, y2, toptime);
+                int bottomleft_X = X_Cal(x1, x2, y1, y2, bottomtime);
 
-            double x2 = NoteList[nextindex].first * MainPanel.Width / 16;
-            double x1 = NoteList[index].first * MainPanel.Width / 16;
-            int y2 = NoteList[nextindex].pos;
-            int y1 = NoteList[index].pos;
-            int topleft_X    = X_Cal(x1, x2, y1, y2, toptime);
-            int bottomleft_X = X_Cal(x1, x2, y1, y2, bottomtime);
+                x1 = NoteList[index].last * MainPanel.Width / 16;
+                x2 = NoteList[nextindex].last * MainPanel.Width / 16;
+                int topright_X = X_Cal(x1, x2, y1, y2, toptime);
+                int bottomright_X = X_Cal(x1, x2, y1, y2, bottomtime);
 
-            x1 = NoteList[index].last * MainPanel.Width / 16;
-            x2 = NoteList[nextindex].last * MainPanel.Width / 16;
-            int topright_X    = X_Cal(x1, x2, y1, y2, toptime);
-            int bottomright_X = X_Cal(x1, x2, y1, y2,bottomtime);
-
-            coordinate.Add(topleft_X);
-            coordinate.Add(topright_X);
-            coordinate.Add(bottomleft_X);
-            coordinate.Add(bottomright_X);
+                coordinate.Add(topleft_X);
+                coordinate.Add(topright_X);
+                coordinate.Add(bottomleft_X);
+                coordinate.Add(bottomright_X);
+            }
+            else 
+            {
+                Console.WriteLine("Error Occur at: " + NoteList[index].pos + " next: " + NoteList[index].nextpos);
+                Console.WriteLine("pos:" + NoteList[index].pos + "l:" + NoteList[index].first + " r:" + NoteList[index].last + " type:"
+                    + NoteList[index].type);
+            }
             return coordinate;
         }
         private void MainPanel_DrawBeatLine(object sender, PaintEventArgs e)
         {
             if (!data_is_ready) return;
             if (bpm == 0) return;
-            int BeatLength = Convert.ToInt32( 60 / bpm * 1000);
+            
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
+            e.Graphics.CompositingQuality = CompositingQuality.HighQuality;
+            e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+           
+            double BeatLength = 60 / bpm * 1000;
             System.Drawing.Pen pen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(255, 0, 0, 0), 5);
             System.Drawing.Font drawFont = new System.Drawing.Font("Arial", 10);
             System.Drawing.SolidBrush drawBrush = new System.Drawing.SolidBrush(System.Drawing.Color.Black);
             System.Drawing.StringFormat drawFormat = new System.Drawing.StringFormat();
             float x = 0.0F;
-            float y;
+            double y;
 
             Current_BeatLines.Clear();
-            int cur_pos = Convert.ToInt32(axWindowsMediaPlayer1.Ctlcontrols.currentPosition * 1000);
+            double cur_pos = axWindowsMediaPlayer1.Ctlcontrols.currentPosition * 1000;
             // 1. 先從NoteList 中抓出Hold範圍 找出在畫面上顯示的Hold
-            // Console.WriteLine("toptime : " + (cur_pos + BottomPanel.Location.Y - 100).ToString());
-            // Console.WriteLine("bottomtime : " + (cur_pos - 100).ToString());
             pen.Color = System.Drawing.Color.DeepSkyBlue;
+            
             for (int i = 0; i < NoteList.Count(); i++)
             {
                 if (NoteList[i].nextpos == -1) continue;
-                int toptime = cur_pos + BottomPanel.Location.Y - 100;
-                int bottomtime = cur_pos - 100;
+                double toptime = cur_pos + (BottomPanel.Location.Y  - 100 ) / dilation;
+                double bottomtime = cur_pos - (100 / dilation);
+                Console.WriteLine("top:" + toptime.ToString() + " bottom: " + bottomtime.ToString());
                 if (NoteList[i].nextpos >= toptime && NoteList[i].pos <= bottomtime)    // 全版
                 {
-                    int top_y = 2900 - (toptime - cur_pos);
+                    int top_y = Convert.ToInt32(3000 - BottomPanel.Location.Y );
                     int bottom_y = 3000;
                     List <int> temp = Coordinate_Cal(i,toptime,bottomtime);
+                    if (temp.Count() == 0) { continue; }
                     Point[] HoldPoints = { new Point(temp[0],top_y), new Point(temp[1],top_y)
                                         , new Point(temp[3],bottom_y),new Point(temp[2],bottom_y)};
                     e.Graphics.FillPolygon(pen.Brush, HoldPoints);
                 }
                 else if (NoteList[i].nextpos >= toptime && NoteList[i].pos < toptime)   // 上版
                 {
-                    int top_y = 2900 - (toptime - cur_pos);
-                    int bottom_y = 2900 - (NoteList[i].pos - cur_pos);
+                    int top_y = Convert.ToInt32(3000 - BottomPanel.Location.Y);
+                    int bottom_y = Convert.ToInt32(2900 - (NoteList[i].pos - cur_pos) * dilation);
                     int bottom_x1 = NoteList[i].first * MainPanel.Width / 16;
                     int bottom_x2 = NoteList[i].last  * MainPanel.Width / 16;
-                    List<int> temp = Coordinate_Cal(i, toptime, bottomtime);
+                    List<int> temp = Coordinate_Cal(i, toptime,bottomtime);
+                    if (temp.Count() == 0) { continue; }
                     Point[] HoldPoints = { new Point(temp[0],top_y), new Point(temp[1],top_y)
-                                        , new Point(bottom_x1,bottom_y),new Point(bottom_x2,bottom_y)};
+                                        , new Point(bottom_x2,bottom_y),new Point(bottom_x1,bottom_y)};
                     e.Graphics.FillPolygon(pen.Brush, HoldPoints);
                 }
                 else if (NoteList[i].nextpos > bottomtime && NoteList[i].pos <= bottomtime) // 下版
                 {
-                    int top_y = 2900 - (NoteList[i].nextpos - cur_pos);
-                    int bottom_y = 2900 - (bottomtime - cur_pos);
+                    int top_y = Convert.ToInt32(2900 - (NoteList[i].nextpos - cur_pos) * dilation);
+                    int bottom_y = 3000;
                     int nextindex = NoteList.FindIndex(xn => xn.pos == NoteList[i].nextpos);
+                    if (nextindex < 0) continue;
                     int top_x1 = NoteList[nextindex].first * MainPanel.Width / 16;
                     int top_x2 = NoteList[nextindex].last  * MainPanel.Width / 16;
                     List<int> temp = Coordinate_Cal(i, toptime, bottomtime);
+                    if (temp.Count() == 0) { continue; }
                     Point[] HoldPoints = { new Point(top_x1,top_y), new Point(top_x2,top_y)
                                         , new Point(temp[3],bottom_y),new Point(temp[2],bottom_y)};
                     e.Graphics.FillPolygon(pen.Brush, HoldPoints);
@@ -321,11 +340,28 @@ namespace Editor
                  
 
             }
-
-            for (int i = 2900; i > 0; i -= BeatLength) {
-                int Cur_Line = Convert.ToInt32(cur_pos / BeatLength) * BeatLength + 2900 - i;
+            
+            // 畫 1/n線...
+            int Beatcount = 0;
+            for (double i = 2900; i > 0; i -= BeatLength*dilation / CurrentFraction)
+            {
+                if (CurrentFraction == 1) break;
+                int Cur_Line = Convert.ToInt32(cur_pos - (cur_pos % BeatLength) + (Beatcount++ * BeatLength / CurrentFraction)  );
                 string drawString = Cur_Line.ToString();
-                // Console.WriteLine("CurrentTime: " + drawString + " Position: " + (cur_pos % BeatLength + i).ToString() + " Position2: " +(2900 - (Cur_Line-cur_pos)).ToString());
+
+                pen.Color = System.Drawing.Color.DarkOrange;
+                pen.Width = 3;
+                
+                y = i ;
+                Current_BeatLines.Add(new Beatline(Cur_Line, Convert.ToInt32(cur_pos % BeatLength + y)));
+                e.Graphics.DrawLine(pen, 0, Convert.ToInt32((cur_pos % BeatLength) * dilation + y), MainPanel.Width, Convert.ToInt32((cur_pos % BeatLength) * dilation + y));
+                e.Graphics.DrawString(drawString, drawFont, drawBrush, x, Convert.ToInt32((cur_pos % BeatLength) * dilation + y + 2), drawFormat);
+
+            }
+            Beatcount = 0;
+             for (double i = 2900; i > 0; i -= BeatLength*dilation) {
+                int Cur_Line = Convert.ToInt32(cur_pos - (cur_pos % BeatLength) + (Beatcount++ * BeatLength) );
+                string drawString = Cur_Line.ToString();
                 if (beat != 0 && (Cur_Line / BeatLength) % beat == 0)
                 {
                     pen.Color = System.Drawing.Color.FromArgb(180, 40, 100, 100);
@@ -338,29 +374,34 @@ namespace Editor
                 }
                 y = i;
                 Current_BeatLines.Add( new Beatline( Cur_Line, Convert.ToInt32(cur_pos % BeatLength + y)) );
-                e.Graphics.DrawLine(pen, 0, cur_pos % BeatLength + y, MainPanel.Width, cur_pos % BeatLength + y);
-
-                int index = NoteList.FindIndex(x1 => x1.pos == Cur_Line);
-                if (index >= 0)
+                e.Graphics.DrawLine(pen, 0, Convert.ToInt32((cur_pos % BeatLength)*dilation + y), MainPanel.Width, Convert.ToInt32((cur_pos % BeatLength)*dilation + y));
+                e.Graphics.DrawString(drawString, drawFont, drawBrush, x, Convert.ToInt32((cur_pos % BeatLength) * dilation + y + 2), drawFormat);
+            }
+            for (int i = 0; i < NoteList.Count(); i++)
+            {
+                double toptime = cur_pos + (BottomPanel.Location.Y - 100) * dilation;
+                double bottomtime = cur_pos - 100 * dilation;
+                if (NoteList[i].pos >= bottomtime && NoteList[i].pos <= toptime)
                 {
-                    int l = NoteList[index].first;
-                    int r = NoteList[index].last;
+
+                    int l = NoteList[i].first;
+                    int r = NoteList[i].last;
 
 
                     ///
                     // 畫出選取範圍
                     ///
-                    int leftBound  = l * MainPanel.Width / 16;
+                    int leftBound = l * MainPanel.Width / 16;
                     int rightBound = r * MainPanel.Width / 16;
-                    int y_pos = Convert.ToInt32(cur_pos % BeatLength + y);
+                    int y_pos = Convert.ToInt32(2900 - (NoteList[i].pos - cur_pos)*dilation);
                     pen.Color = System.Drawing.Color.Coral;
-                    e.Graphics.DrawLine(pen, leftBound, y_pos,rightBound , y_pos);
+                    e.Graphics.DrawLine(pen, leftBound, y_pos, rightBound, y_pos);
                     ///
                     //  畫出Note
                     ///
-                    
 
-                    switch (NoteList[index].type) 
+
+                    switch (NoteList[i].type)
                     {
                         case 0:
                             GraphicsPath path = new GraphicsPath();
@@ -369,55 +410,61 @@ namespace Editor
                             pthGrBrush.CenterColor = System.Drawing.Color.FromArgb(255, 0, 0, 255);
                             System.Drawing.Color[] colors = { System.Drawing.Color.FromArgb(255, 0, 255, 255) };
                             pthGrBrush.SurroundColors = colors;
-                            e.Graphics.FillRectangle(pthGrBrush,leftBound - 5, y_pos - 7, rightBound - leftBound + 10, 14);
+                            e.Graphics.FillRectangle(pthGrBrush, leftBound - 5, y_pos - 7, rightBound - leftBound + 10, 14);
                             break;
                         case 1:
-                            if ( NoteList[index].nextpos != -1) 
+                            if (NoteList[i].nextpos != -1)
                             {
-                                int nextindex  = NoteList.FindIndex(x1 => x1.pos == NoteList[index].nextpos);
-                                if(NoteList[nextindex].type != 1)
+                                int nextindex = NoteList.FindIndex(x1 => x1.pos == NoteList[i].nextpos);
+                                if (nextindex > 0)
                                 {
-                                    NoteList[index].nextpos = -1;
-                                    break;
-                                }
-                                int next_left  = NoteList[nextindex].first * MainPanel.Width / 16; ;
-                                int next_right = NoteList[nextindex].last  * MainPanel.Width / 16; ;
-                                int next_y     = cur_pos -  NoteList[nextindex].pos + 2900;
-                                //Console.WriteLine("next_y: " + next_y.ToString());
-                                pen.Color = System.Drawing.Color.DeepSkyBlue;
-                                Point[] HoldPoints = { new Point(next_left,next_y), new Point(next_right,next_y),
+                                    if (NoteList[nextindex].type != 1)
+                                    {
+                                        NoteList[i].nextpos = -1;
+                                        break;
+                                    }
+                                    int next_left = NoteList[nextindex].first * MainPanel.Width / 16; ;
+                                    int next_right = NoteList[nextindex].last * MainPanel.Width / 16; ;
+                                    int next_y = Convert.ToInt32(2900 + (cur_pos - NoteList[nextindex].pos )*dilation );
+                                    pen.Color = System.Drawing.Color.DeepSkyBlue;
+                                    Point[] HoldPoints = { new Point(next_left,next_y), new Point(next_right,next_y),
                                                         new Point(rightBound,y_pos), new Point(leftBound,y_pos)};
-                                e.Graphics.FillPolygon(pen.Brush, HoldPoints);
+                                    e.Graphics.FillPolygon(pen.Brush, HoldPoints);
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Error Occur at:　" + NoteList[i].pos + " next: " + NoteList[i].nextpos);
+                                    Console.WriteLine("pos:" + NoteList[i].pos + "l:" + NoteList[i].first + " r:" + NoteList[i].last + " type:"
+                                     + NoteList[i].type);
+                                }
                             }
                             break;
                         case 2:
                             System.Drawing.Pen pen2 = new System.Drawing.Pen(System.Drawing.Color.FromArgb(225, 100, 240, 200), 5);
                             e.Graphics.FillRectangle(pen2.Brush, leftBound, y_pos - 10, rightBound - leftBound, 20);
-                            for (int count = leftBound; count< rightBound -10; count += 20)
+                            for (int count = leftBound; count < rightBound - 10; count += 20)
                             {
-                                switch (NoteList[index].dir) 
+                                switch (NoteList[i].dir)
                                 {
                                     case 0:
-                                        e.Graphics.DrawString("▲", drawFont, drawBrush, count, y_pos -8, drawFormat);
+                                        e.Graphics.DrawString("▲", drawFont, drawBrush, count, y_pos - 8, drawFormat);
                                         break;
                                     case 1:
-                                        e.Graphics.DrawString("▼", drawFont, drawBrush, count, y_pos -8, drawFormat);
+                                        e.Graphics.DrawString("▼", drawFont, drawBrush, count, y_pos - 8, drawFormat);
                                         break;
                                     case 2:
-                                        e.Graphics.DrawString("❮", drawFont, drawBrush, count, y_pos -8, drawFormat);
+                                        e.Graphics.DrawString("❮", drawFont, drawBrush, count, y_pos - 8, drawFormat);
                                         break;
                                     case 3:
-                                        e.Graphics.DrawString("❯", drawFont, drawBrush, count, y_pos -8, drawFormat);
+                                        e.Graphics.DrawString("❯", drawFont, drawBrush, count, y_pos - 8, drawFormat);
                                         break;
-                                } 
+                                }
                             }
                             pen2.Dispose();
                             //e.Graphics.DrawString("2", drawFont, drawBrush, (l + r) * MainPanel.Width / 32, cur_pos % BeatLength + y - 5, drawFormat);
                             break;
                     }
                 }
-                
-                e.Graphics.DrawString(drawString, drawFont, drawBrush, x, cur_pos % BeatLength + y + 2, drawFormat);
             }
 
             pen.Dispose();
@@ -433,14 +480,14 @@ namespace Editor
             //畫線
 
 
-            System.Drawing.Pen pen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(255, 0, 0, 0),5);
+            System.Drawing.Pen pen = new System.Drawing.Pen(System.Drawing.Color.DarkGray,5);
             int mpw = MainPanel_Background.Width;
             int mph = MainPanel_Background.Height;
             e.Graphics.DrawLine(pen, 1 * mpw / 4, 0, 1 * mpw / 4, mph);
             e.Graphics.DrawLine(pen, 2 * mpw / 4, 0, 2 * mpw / 4, mph);
             e.Graphics.DrawLine(pen, 3 * mpw / 4, 0, 3 * mpw / 4, mph);
 
-            pen.Color = System.Drawing.Color.FromArgb(180, 200, 100, 100);
+            pen.Color = System.Drawing.Color.FromArgb(140, 30, 30,230);
             pen.Width = 10;
             e.Graphics.DrawLine(pen, 0, 2900, mpw, 2900);
 
@@ -478,11 +525,19 @@ namespace Editor
             if (!isLoaded || !data_is_ready) return;
             if (me.Delta >0)
             {
-                axWindowsMediaPlayer1.Ctlcontrols.currentPosition += 0.1;
+                if (Control.ModifierKeys == Keys.Control) 
+                {
+                    dilation += 0.01;
+                }
+                else axWindowsMediaPlayer1.Ctlcontrols.currentPosition += 0.1 ;
             }
             else
             {
-                axWindowsMediaPlayer1.Ctlcontrols.currentPosition -= 0.1;
+                if (Control.ModifierKeys == Keys.Control)
+                {
+                    if(dilation>1) dilation -= 0.01;
+                }
+                else axWindowsMediaPlayer1.Ctlcontrols.currentPosition -= 0.1 ;
             }
             ProgressBar.Height = Convert.ToInt32(Convert.ToDouble(ProgressBar_Background.Height) * axWindowsMediaPlayer1.Ctlcontrols.currentPosition / axWindowsMediaPlayer1.Ctlcontrols.currentItem.duration);
             Refresh_Layout();
@@ -510,8 +565,11 @@ namespace Editor
                 { 
                     for (int i = 0; i < NoteList.Count(); i++)
                     {
-                        if (NoteList[i].nextpos == time) NoteList[i].nextpos = -1;
                         if (NoteList[i].pos == time) NoteList.RemoveAt(i);
+                    }
+                    for (int i = 0; i < NoteList.Count(); i++)
+                    {
+                        if (NoteList[i].nextpos == time) NoteList[i].nextpos = -1;
                     }
                 }
             }
@@ -535,12 +593,14 @@ namespace Editor
                     if (cur_beatline.y < point_y) break;
                     selectline++;
                 }
-                // 2. 找出所有橫跨的行  left~right  (0~15)
+                // 2. 找出所有橫跨的行  left~right  (0~16)
                 int time  = Current_BeatLines[selectline].time;
                 int left  = point_x  / (MainPanel.Width / 16);
                 int right = me.X     / (MainPanel.Width / 16);
-
-                if (left > right)
+                if (right < 0) right = 0;
+                if (right > 16) right = 16;
+                Console.WriteLine("left: " + left.ToString());
+                    if (left > right)
                 {
                     int temp = left;
                     left     = right;
@@ -554,8 +614,11 @@ namespace Editor
                     {
                         for (int i = 0; i < NoteList.Count(); i++)
                         {
-                            if (NoteList[i].nextpos == time) NoteList[i].nextpos = -1;
                             if (NoteList[i].pos == time) NoteList.RemoveAt(i);
+                        }
+                        for (int i = 0; i < NoteList.Count(); i++)
+                        {
+                            if (NoteList[i].nextpos == time) NoteList[i].nextpos = -1;
                         }
                     }
                     else old = true;
@@ -582,16 +645,12 @@ namespace Editor
                             int NearestHold = -1;
                             for (int i = 0; i < NoteList.Count(); i++)
                             {
-                                Console.WriteLine("time: " + NoteList[i].pos + " type: " + NoteList[i].type + " next: " + NoteList[i].nextpos);
                                 if (NoteList[i].pos >= time || NoteList[i].type != 1 ) continue;
                                 if (NearestHold == -1 || NoteList[i].pos > NoteList[NearestHold].pos) NearestHold = i;
                             }
-                            if (NearestHold != -1)
+                            if (NearestHold != -1 && CurrentHoldMode == 0)
                             {
-                               // Console.WriteLine("Current Line: "+time.ToString()+" Next Line:"+ NoteList[NearestHold].pos.ToString()+ "CurrentHoldMode: " + CurrentHoldMode.ToString());
-                                if (CurrentHoldMode == 0) NoteList[NearestHold].nextpos = time;
-                                else NoteList[NearestHold].nextpos = -1;
-
+                                NoteList[NearestHold].nextpos = time;
                             }
                             
                             if (old == true) NoteList[index].Refresh(time, 1, left, right);
@@ -680,6 +739,36 @@ namespace Editor
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
+            if (e.KeyChar == 101 || e.KeyChar == 69) 
+            {
+                switch (CurrentFraction) 
+                {
+                    case 1:
+                        CurrentFraction = 2;
+                        Fraction_2.BackColor = System.Drawing.Color.Aquamarine;
+                        break;
+                    case 2:
+                        CurrentFraction = 3;
+                        Fraction_2.BackColor = System.Drawing.Color.White;
+                        Fraction_3.BackColor = System.Drawing.Color.Aquamarine;
+                        break;
+                    case 3:
+                        CurrentFraction = 4;
+                        Fraction_3.BackColor = System.Drawing.Color.White;
+                        Fraction_4.BackColor = System.Drawing.Color.Aquamarine;
+                        break;
+                    case 4:
+                        CurrentFraction = 8;
+                        Fraction_4.BackColor = System.Drawing.Color.White;
+                        Fraction_8.BackColor = System.Drawing.Color.Aquamarine;
+                        break;
+                    case 8:
+                        CurrentFraction = 1;
+                        Fraction_8.BackColor = System.Drawing.Color.White;
+                        break;
+                }
+                MainPanel.Refresh();
+            }
             TypeSwitch(e.KeyChar);
             if (CurrentType == 2)
             {
@@ -724,6 +813,77 @@ namespace Editor
                 }
             }
         }
+        private void Fraction_2_Click(object sender, EventArgs e)
+        {
+            if (CurrentFraction == 2)
+            {
+                CurrentFraction = 1;
+                Fraction_2.BackColor = System.Drawing.Color.White;
+            }
+            else
+            {
+                CurrentFraction = 2;
+                Fraction_2.BackColor = System.Drawing.Color.Aquamarine;
+                Fraction_3.BackColor = System.Drawing.Color.White;
+                Fraction_4.BackColor = System.Drawing.Color.White;
+                Fraction_8.BackColor = System.Drawing.Color.White;
+            }
+            MainPanel.Refresh();
+        }
+
+        private void Fraction_3_Click(object sender, EventArgs e)
+        {
+            if (CurrentFraction == 3)
+            {
+                CurrentFraction = 1;
+                Fraction_3.BackColor = System.Drawing.Color.White;
+            }
+            else
+            {
+                CurrentFraction = 3;
+                Fraction_2.BackColor = System.Drawing.Color.White;
+                Fraction_3.BackColor = System.Drawing.Color.Aquamarine;
+                Fraction_4.BackColor = System.Drawing.Color.White;
+                Fraction_8.BackColor = System.Drawing.Color.White;
+            }
+            MainPanel.Refresh();
+        }
+
+        private void Fraction_4_Click(object sender, EventArgs e)
+        {
+            if (CurrentFraction == 4)
+            {
+                CurrentFraction = 1;
+                Fraction_4.BackColor = System.Drawing.Color.White;
+            }
+            else
+            {
+                CurrentFraction = 4;
+                Fraction_2.BackColor = System.Drawing.Color.White;
+                Fraction_3.BackColor = System.Drawing.Color.White;
+                Fraction_4.BackColor = System.Drawing.Color.Aquamarine;
+                Fraction_8.BackColor = System.Drawing.Color.White;
+            }
+            MainPanel.Refresh();
+        }
+
+        private void Fraction_8_Click(object sender, EventArgs e)
+        {
+            if (CurrentFraction == 8)
+            {
+                CurrentFraction = 1;
+                Fraction_8.BackColor = System.Drawing.Color.White;
+            }
+            else
+            {
+                CurrentFraction = 8;
+                Fraction_2.BackColor = System.Drawing.Color.White;
+                Fraction_3.BackColor = System.Drawing.Color.White;
+                Fraction_4.BackColor = System.Drawing.Color.White;
+                Fraction_8.BackColor = System.Drawing.Color.Aquamarine;
+            }
+            MainPanel.Refresh();
+        }
 
 
         ///
@@ -767,7 +927,8 @@ namespace Editor
             SetForm.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SetForm_Closing);
             SetForm.Show(this);
         }
-       
+
+
         private void SetForm_Closing(object sender, EventArgs e) {
             if (SetForm.set_ready == true)
             {
@@ -781,7 +942,6 @@ namespace Editor
                 MessageBox.Show("Set Failed!");
             }
         }
-
 
         private string SetJsonData() {
             string sb;
