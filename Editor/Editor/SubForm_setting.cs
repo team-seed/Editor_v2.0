@@ -17,19 +17,41 @@ namespace Editor
         //private Control _F1 = new Control();
 
         public bool set_ready;
+        public bool newSection = true;
+        public int SectionIndex;
+        public  Label Label__ref;
+
         public SubForm_setting()
         {
             set_ready = false;
             InitializeComponent();
         }
+        public SubForm_setting(ref Label l1,int index,string name, double bpm, double offset, int beat)
+        {
+            set_ready = false;
+            InitializeComponent();
+            Label__ref = l1;
+            SectionIndex = index;
+            textBox1.Text = bpm.ToString();
+            textBox2.Text = offset.ToString();
+            textBox3.Text = beat.ToString();
+            textBox4.Text = name;
+            newSection = false;
+        }
+        public SubForm_setting(int count)
+        {
+            set_ready = false;
+            InitializeComponent();
+            textBox4.Text = "Section_" + count.ToString();
+        }
 
-        public void SetData(ref double bpm, ref double offset, ref int beat) {
+        public void SetData(ref string name,ref double bpm, ref double offset, ref int beat) {
+            name = textBox4.Text;
             bpm = Convert.ToDouble(textBox1.Text);
             offset = Convert.ToDouble(textBox2.Text);
             beat = Convert.ToInt32(textBox3.Text);
             return;
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
             double a, b; int c;

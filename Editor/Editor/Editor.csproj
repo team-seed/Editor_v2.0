@@ -127,6 +127,8 @@
     <None Include="Resources\swipe.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\plus%281%29.png" />
+    <None Include="Resources\plus.png" />
     <None Include="Resources\unlink.png" />
     <None Include="Resources\left.png" />
     <None Include="Resources\up.png" />
