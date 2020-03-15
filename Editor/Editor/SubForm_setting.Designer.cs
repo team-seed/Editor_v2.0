@@ -121,6 +121,7 @@
             this.textBox4.Size = new System.Drawing.Size(100, 25);
             this.textBox4.TabIndex = 8;
             this.textBox4.Text = "Section_1";
+            this.textBox4.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
             // 
             // SubForm_setting
             // 

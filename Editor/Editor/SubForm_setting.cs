@@ -72,5 +72,9 @@ namespace Editor
                 MessageBox.Show("請輸入數字");
         }
 
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
+using System.IO;
 
 namespace Editor
 {
@@ -67,6 +68,10 @@ namespace Editor
                 this.NAME = name;
                 this.noteset = new List<Note>();
             }
+            public SET(string name, double bpm, double offset, int beat, List<Note> n) : this(name, bpm, offset, beat)
+            {
+                this.noteset = n;
+            }
         };
         // List<Note> SetList[CurrentSection].noteset = new List<Note>();
         List<SET> SetList = new List<SET>();
@@ -119,6 +124,8 @@ namespace Editor
                 First_Setting = true;
                 isLoaded = true;
                 axWindowsMediaPlayer1.Ctlcontrols.play();
+                Import.BackColor = System.Drawing.Color.FromArgb(255, 227, 227, 227);
+                Import.Enabled = true;
             }
 
         }
@@ -1096,38 +1103,7 @@ namespace Editor
         ///
         // Yabadado
         ///
-        private void button6_Click(object sender, EventArgs e)
-        {
-            //create data
-            //click
-            Note n_c = new Note(533, 0, 0, 1);
-            SetList[CurrentSection].noteset.Add(n_c);
-
-            //swipe
-            Note n_s = new Note(1066, 2, 6, 2, 4);
-            SetList[CurrentSection].noteset.Add(n_s);
-
-            //hold
-            Note n_h1 = new Note(1599, 2, 4, 10, 2033);
-            Note n_h2 = new Note(2033, 2, 6, 16, 2566);
-            Note n_h3 = new Note(2566, 2, 0, 8, 3099);
-            SetList[CurrentSection].noteset.Add(n_h1);
-            SetList[CurrentSection].noteset.Add(n_h2);
-            SetList[CurrentSection].noteset.Add(n_h3);
-
-            foreach (Note n in SetList[CurrentSection].noteset) {
-                if(n.type == 0)
-                Console.WriteLine(n.pos.ToString() + " " + n.first.ToString() + " "
-                        + n.last.ToString() + " " + n.type.ToString());
-                if (n.type == 1)
-                    Console.WriteLine(n.pos.ToString() + " " + n.first.ToString() + " "
-                        + n.last.ToString() + " " + n.type.ToString()+" "+n.nextpos.ToString());
-                if (n.type == 2)
-                    Console.WriteLine(n.pos.ToString() + " " + n.first.ToString() + " "
-                        + n.last.ToString() + " " + n.type.ToString() + " " + n.dir.ToString());
-            }
-
-        }
+        
         private void Settings_Click(object sender, EventArgs e)
         {
             SetForm = new SubForm_setting(SetList.Count());            
@@ -1178,6 +1154,8 @@ namespace Editor
         }
         private void Section_Add()
         {
+            Console.WriteLine("test: " + SetList.Count().ToString());
+
             for (int i = 0; i < SetList.Count(); i++)
             { 
                 Label l = new Label();
@@ -1187,11 +1165,13 @@ namespace Editor
                 l.Name = i.ToString();         //Section Index
                 l.Size = new System.Drawing.Size(88, 17);
                 l.TabIndex = 3;
-                l.Text = SetList[i].NAME;
+                l.Text = SetList[i].NAME == "" ? "Section_"+i.ToString() : SetList[i].NAME;
                 l.MouseClick += new System.Windows.Forms.MouseEventHandler(this.l_Click);
                 this.BottomPanel.Controls.Add(l);
+                Console.WriteLine(l.Text);
             }
         }
+
         private void l_Click(object sender, MouseEventArgs me)
         {
             if (me.Button == MouseButtons.Left) 
@@ -1216,33 +1196,258 @@ namespace Editor
             }
 
         }
-        private void CurrentSectionName_Click(object sender, EventArgs e)
+        
+        private void Export_Click(object sender, EventArgs e)
         {
+            SaveFileDialog sfdialog = new SaveFileDialog();
 
+            string s = SetJsonData();
+            string out_edt = SetEdtrData();
+            sfdialog.Filter = "txt files (*.json)|*.json|All files (*.*)|*.*";
+            sfdialog.FilterIndex = 1;
+            sfdialog.RestoreDirectory = true;
+            if (sfdialog.ShowDialog() == DialogResult.OK)
+            {
+                File.WriteAllText(sfdialog.FileName, s);
+                File.WriteAllText(sfdialog.FileName + "_edt", out_edt);
+            }
+
+
+            //Console.WriteLine(s);
+        }
+
+        private void Import_Click(object sender, EventArgs e)
+        {
+            SetList.Clear();
+            OpenFileDialog ofdialog = new OpenFileDialog();
+            string sinput = "";
+            ofdialog.Filter = "txt files (*.json_edt)|*.json_edt|All files (*.*)|*.*";
+            ofdialog.FilterIndex = 1;
+            ofdialog.RestoreDirectory = true;
+            if (ofdialog.ShowDialog() == DialogResult.OK)
+            {
+                sinput = File.ReadAllText(ofdialog.FileName);
+
+
+                JObject jb = JObject.Parse(sinput);
+                string bpm_range = (string)jb["BPM_RANGE"];
+                JArray in_sec = (JArray)jb["SECTION"];
+
+                List<JObject> sect = in_sec.Select(c => (JObject)c).ToList();
+
+                //Parse JArray(NOTES) to NoteList
+                foreach (JObject s in sect)
+                {
+                    string NAME = (string)s["NAME"];
+                    double BPM = Convert.ToDouble(s["BPM"]);
+                    double OFFSET = Convert.ToDouble(s["OFFSET"]);
+                    int BEAT = Convert.ToInt32(s["BEATS"]);
+                    List<Note> n = new List<Note>();
+                    JArray nt = (JArray)s["NOTES"];
+                    ParseJArray(ref n, nt);
+                    SetList.Add(new SET(NAME, BPM, OFFSET, BEAT, n));
+
+                }
+
+                data_is_ready = true;
+                Section_Add();
+                MainPanel.Refresh();
+
+            }
         }
 
         private string SetJsonData() {
-            string sb;
-            foreach (Note n in SetList[CurrentSection].noteset) {
-                sb = n.pos.ToString() + "," + n.first.ToString() + "," + n.last.ToString() + "," + n.type.ToString();
+
+            //不同SECTION有不同NoteList
+            List<string> Notedata = new List<string>();     //  Notelist in section
+            List<JObject> section = new List<JObject>();    //  Jobject list for json file output.
+
+            foreach (SET s in SetList)
+            {
+
+                //NoteList to string List
+                string sb = "";
+                s.noteset.Sort((x, y) => { return x.pos.CompareTo(y.pos); });
+
+                foreach (Note n in s.noteset)
+                {
+
+                    //  may new gesture
+                    //  cur = (pos, gesture, first, last, type) 
+                    //  cur only for click and swipe.
+
+                    string cur = n.pos.ToString() + ",0," + n.first.ToString() + "," + n.last.ToString() + "," + n.type.ToString();
+
+                    if (n.type == 0)            //click
+                        Notedata.Add(cur);
+
+                    if (n.type == 1)            //hold   ***format: pos,first,last,type|pos,first,last.***
+                    {
+                        if (sb != "")
+                            sb += "|" + n.pos.ToString() + ":" + n.first.ToString() + ":" + n.last.ToString();
+                        else
+                            sb = cur;
+                        if (n.nextpos == -1)
+                        {
+                            Notedata.Add(sb);
+                            sb = "";
+                        }
+                    }
+                    if (n.type == 2)           // swipe
+                    {
+                        Notedata.Add(cur + "|" + n.dir.ToString());
+                    }
+                }
+                //Console.WriteLine(Notedata.Count());
+                JObject SEC = new JObject(
+                    //new JProperty("NAME", s.NAME),
+                    new JProperty("BEATS", s.BEAT),
+                    new JProperty("BPM", s.BPM),
+                    new JProperty("NOTES",
+                        new JArray(
+                            from nt in Notedata
+                            select new JValue(nt)
+                        )
+                    ),
+                    new JProperty("OFFSET", s.OFFSET)
+                    );
+                section.Add(SEC);
+                Notedata.Clear();
             }
+
+
             JObject jObj =
                 new JObject(
                     new JProperty("BPM_RANGE", 0),
                     new JProperty("SECTION",
-                        new JObject(
-                            new JProperty("BEATS", SetList[CurrentSection].BEAT),
-                            new JProperty("BPM", SetList[CurrentSection].BPM),
-                            new JProperty("NOTES",
-                                new JArray(
-                                    from nt in SetList[CurrentSection].noteset
-                                    select new JValue(nt)
-                                )
-                            ),
-                            new JProperty("OFFSET", SetList[CurrentSection].OFFSET)
+                        new JArray(
+                            from st in section
+                            select new JObject(st)
                             )));
+
+
+
             return jObj.ToString();
-        }   
+        }
+
+        private string SetEdtrData()
+        {
+            //不同SECTION有不同NoteList
+            List<string> Notedata = new List<string>();     //  Notelist in section
+            List<JObject> section = new List<JObject>();    //  Jobject list for json file output.
+
+            foreach (SET s in SetList)
+            {
+
+                //NoteList to string List
+                string sb = "";
+                foreach (Note n in s.noteset)
+                {
+
+                    //  may new gesture
+                    //  cur = (pos, gesture, first, last, type) 
+                    //  cur only for click and swipe.
+                    string cur = n.pos.ToString() + ",0," + n.first.ToString() + "," + n.last.ToString() + "," + n.type.ToString();
+
+                    if (n.type == 0)            //click
+                        Notedata.Add(cur);
+
+                    if (n.type == 1)            //hold   ***format: pos,first,last,type|pos,first,last.***
+                    {
+                        if (sb != "")
+                            sb += "|" + n.pos.ToString() + ":" + n.first.ToString() + ":" + n.last.ToString();
+                        else
+                            sb = cur;
+                        if (n.nextpos == -1)
+                        {
+                            Notedata.Add(sb);
+                            sb = "";
+                        }
+                    }
+                    if (n.type == 2)           // swipe
+                    {
+                        Notedata.Add(cur + "|" + n.dir.ToString());
+                    }
+                }
+                //Console.WriteLine(Notedata.Count());
+                JObject SEC = new JObject(
+                    new JProperty("NAME", s.NAME),
+                    new JProperty("BEATS", s.BEAT),
+                    new JProperty("BPM", s.BPM),
+                    new JProperty("NOTES",
+                        new JArray(
+                            from nt in Notedata
+                            select new JValue(nt)
+                        )
+                    ),
+                    new JProperty("OFFSET", s.OFFSET)
+                    );
+                section.Add(SEC);
+                Notedata.Clear();
+            }
+
+
+            JObject jObj =
+                new JObject(
+                    new JProperty("BPM_RANGE", 0),
+                    new JProperty("SECTION",
+                        new JArray(
+                            from st in section
+                            select new JObject(st)
+                            )));
+
+
+
+            return jObj.ToString();
+        }
+
+        private void ParseJArray(ref List<Note> n, JArray nl)
+        {
+            foreach (string s in nl)
+            {
+                string[] note = s.Split(',');
+                int pos = Convert.ToInt32(note[0]);
+                int first = Convert.ToInt32(note[2]);
+                int last = Convert.ToInt32(note[3]);
+                int type = Convert.ToInt32(note[4][0] - 48);
+
+                if (type == 0)
+                {
+                    //Console.WriteLine(pos.ToString() + " " + type.ToString() + " " + first.ToString() + " " + last.ToString());
+                    n.Add(new Note(pos, type, first, last));
+                }
+                else if (type == 1)
+                {
+                    string[] hold = note[4].Substring(1, note[4].Length - 1).Split('|');
+                    foreach (string h in hold)
+                    {
+                        if (h == "") continue;  //avoid error
+
+                        string[] next = h.Split(':');
+                        int next_pos = Convert.ToInt32(next[0]);
+
+                        //h的index = N 時Add 第(N-1)筆資訊
+                        n.Add(new Note(pos, type, first, last, next_pos));
+                        //更新pos first last 資訊給下一個note用
+                        pos = next_pos;
+                        first = Convert.ToInt32(next[1]);
+                        last = Convert.ToInt32(next[2]);
+                    }
+                    //Console.WriteLine(pos.ToString() + " " + type.ToString() + " " + first.ToString() + " " + last.ToString() + " -1");
+                    n.Add(new Note(pos, type, first, last, -1));
+                }
+                else if (type == 2)
+                {
+                    int dir = Convert.ToInt32(note[4][2] - 48);
+                    n.Add(new Note(pos, type, first, last, dir));
+                    //Console.WriteLine(pos.ToString() + " " + type.ToString() + " " + first.ToString() + " " + last.ToString() + " " + dir.ToString());
+                }
+
+            }
+
+        }
+
+
     }
     public partial class BackgroundPanel : Panel
     {

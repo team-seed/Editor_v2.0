@@ -34,8 +34,8 @@
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.SelectMusic = new System.Windows.Forms.Button();
             this.PlayPause = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
+            this.Export = new System.Windows.Forms.Button();
+            this.Import = new System.Windows.Forms.Button();
             this.ProgressBar_Bottom = new System.Windows.Forms.Panel();
             this.music_duration = new System.Windows.Forms.Label();
             this.music_position = new System.Windows.Forms.Label();
@@ -77,8 +77,8 @@
             this.flowLayoutPanel1.AutoScroll = true;
             this.flowLayoutPanel1.Controls.Add(this.SelectMusic);
             this.flowLayoutPanel1.Controls.Add(this.PlayPause);
-            this.flowLayoutPanel1.Controls.Add(this.button5);
-            this.flowLayoutPanel1.Controls.Add(this.button6);
+            this.flowLayoutPanel1.Controls.Add(this.Export);
+            this.flowLayoutPanel1.Controls.Add(this.Import);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(630, 100);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(122, 615);
@@ -87,45 +87,51 @@
             // SelectMusic
             // 
             this.SelectMusic.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.SelectMusic.BackColor = System.Drawing.SystemColors.ControlLight;
             this.SelectMusic.Location = new System.Drawing.Point(3, 3);
             this.SelectMusic.Name = "SelectMusic";
             this.SelectMusic.Size = new System.Drawing.Size(111, 44);
             this.SelectMusic.TabIndex = 0;
             this.SelectMusic.Text = "SelectMusic";
-            this.SelectMusic.UseVisualStyleBackColor = true;
+            this.SelectMusic.UseVisualStyleBackColor = false;
             this.SelectMusic.Click += new System.EventHandler(this.SelectMusic_Click);
             // 
             // PlayPause
             // 
             this.PlayPause.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.PlayPause.BackColor = System.Drawing.SystemColors.ControlLight;
             this.PlayPause.Location = new System.Drawing.Point(3, 53);
             this.PlayPause.Name = "PlayPause";
             this.PlayPause.Size = new System.Drawing.Size(111, 44);
             this.PlayPause.TabIndex = 1;
             this.PlayPause.Text = "Play/Pause";
-            this.PlayPause.UseVisualStyleBackColor = true;
+            this.PlayPause.UseVisualStyleBackColor = false;
             this.PlayPause.Click += new System.EventHandler(this.PlayPause_Click);
             // 
-            // button5
+            // Export
             // 
-            this.button5.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.button5.Location = new System.Drawing.Point(3, 103);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(111, 44);
-            this.button5.TabIndex = 3;
-            this.button5.Text = "button5";
-            this.button5.UseVisualStyleBackColor = true;
+            this.Export.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Export.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.Export.Location = new System.Drawing.Point(3, 103);
+            this.Export.Name = "Export";
+            this.Export.Size = new System.Drawing.Size(111, 44);
+            this.Export.TabIndex = 3;
+            this.Export.Text = "Export";
+            this.Export.UseVisualStyleBackColor = false;
+            this.Export.Click += new System.EventHandler(this.Export_Click);
             // 
-            // button6
+            // Import
             // 
-            this.button6.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.button6.Location = new System.Drawing.Point(3, 153);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(111, 44);
-            this.button6.TabIndex = 4;
-            this.button6.Text = "button6";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
+            this.Import.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Import.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.Import.Enabled = false;
+            this.Import.Location = new System.Drawing.Point(3, 153);
+            this.Import.Name = "Import";
+            this.Import.Size = new System.Drawing.Size(111, 44);
+            this.Import.TabIndex = 4;
+            this.Import.Text = "Import";
+            this.Import.UseVisualStyleBackColor = false;
+            this.Import.Click += new System.EventHandler(this.Import_Click);
             // 
             // ProgressBar_Bottom
             // 
@@ -489,8 +495,8 @@
         private System.Windows.Forms.Button SelectMusic;
         private System.Windows.Forms.Button PlayPause;
         private System.Windows.Forms.Button Section;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button Export;
+        private System.Windows.Forms.Button Import;
         private System.Windows.Forms.Panel ProgressBar_Bottom;
         private System.Windows.Forms.Panel ProgressBar_Background;
         private System.Windows.Forms.Panel ProgressBar;
