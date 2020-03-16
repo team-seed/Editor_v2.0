@@ -61,6 +61,8 @@
             this.Right = new System.Windows.Forms.Button();
             this.Down = new System.Windows.Forms.Button();
             this.Click = new System.Windows.Forms.Button();
+            this.AutoSave = new System.Windows.Forms.Timer(this.components);
+            this.AutoSavePath = new System.Windows.Forms.Label();
             this.MainPanel = new Editor.BackgroundPanel();
             this.MainPanel_Background = new Editor.BackgroundPanel();
             this.flowLayoutPanel1.SuspendLayout();
@@ -416,6 +418,20 @@
             this.Click.UseVisualStyleBackColor = false;
             this.Click.Click += new System.EventHandler(this.Click_Click);
             // 
+            // AutoSave
+            // 
+            this.AutoSave.Interval = 5000;
+            this.AutoSave.Tick += new System.EventHandler(this.AutoSave_Tick);
+            // 
+            // AutoSavePath
+            // 
+            this.AutoSavePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.AutoSavePath.AutoSize = true;
+            this.AutoSavePath.Location = new System.Drawing.Point(630, 729);
+            this.AutoSavePath.Name = "AutoSavePath";
+            this.AutoSavePath.Size = new System.Drawing.Size(0, 15);
+            this.AutoSavePath.TabIndex = 23;
+            // 
             // MainPanel
             // 
             this.MainPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -451,6 +467,7 @@
             // 
             this.BackColor = System.Drawing.SystemColors.ControlDark;
             this.ClientSize = new System.Drawing.Size(782, 753);
+            this.Controls.Add(this.AutoSavePath);
             this.Controls.Add(this.Section);
             this.Controls.Add(this.Fraction_12);
             this.Controls.Add(this.Fraction_6);
@@ -476,6 +493,7 @@
             this.Controls.Add(this.ProgressBar_Bottom);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Name = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.SizeChanged += new System.EventHandler(this.form1_SizeChanged);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
             this.flowLayoutPanel1.ResumeLayout(false);
@@ -523,6 +541,8 @@
         private System.Windows.Forms.Label Fraction_8;
         private System.Windows.Forms.Label Fraction_6;
         private System.Windows.Forms.Label Fraction_12;
+        private System.Windows.Forms.Timer AutoSave;
+        private System.Windows.Forms.Label AutoSavePath;
     }
 }
 

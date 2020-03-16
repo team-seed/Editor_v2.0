@@ -416,7 +416,8 @@ namespace Editor
             for (double i = 3000; i > 0; i -= BeatLength/CurrentFraction)
             {
                 if (CurrentFraction == 1) break;
-                int Cur_Line = Convert.ToInt32(bottom - (bottom % BeatLength) + (Beatcount++ * BeatLength / CurrentFraction)  );
+                double ofs = SetList[CurrentSection].OFFSET;
+                int Cur_Line = Convert.ToInt32(bottom-ofs - ((bottom-ofs) % BeatLength) + (Beatcount++ * BeatLength / CurrentFraction) + ofs);
                 string drawString = Cur_Line.ToString();
 
                 pen.Color = System.Drawing.Color.DarkOrange;
@@ -431,8 +432,9 @@ namespace Editor
             }
             // 畫 Beatline
             Beatcount = 0;
-             for (double i = 2900; i > 0; i -= BeatLength) {
-                int Cur_Line = Convert.ToInt32(cur_pos - (cur_pos % BeatLength) + (Beatcount++ * BeatLength) );
+             for (double i = 3000; i > 0; i -= BeatLength) {
+                double ofs = SetList[CurrentSection].OFFSET;
+                int Cur_Line = Convert.ToInt32(bottom - ofs - ((bottom - ofs) % BeatLength) + (Beatcount++ * BeatLength ) + ofs);
                 string drawString = Cur_Line.ToString();
                 if (SetList[CurrentSection].BEAT != 0 && Convert.ToInt32(Cur_Line / BeatLength) % SetList[CurrentSection].BEAT == 0)
                 {
@@ -1115,6 +1117,7 @@ namespace Editor
             if (SetForm.set_ready == true)
             {
                 data_is_ready = true;
+                AutoSave.Start();
                 if (SetForm.newSection)        // New Section
                 {
                     string name = "";
@@ -1154,21 +1157,21 @@ namespace Editor
         }
         private void Section_Add()
         {
-            Console.WriteLine("test: " + SetList.Count().ToString());
 
             for (int i = 0; i < SetList.Count(); i++)
             { 
                 Label l = new Label();
                 l.AutoSize = true;
                 l.Font = new System.Drawing.Font("標楷體", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+                l.BackColor = System.Drawing.Color.White;
                 l.Location = new System.Drawing.Point(10 + i * 100, 23);
                 l.Name = i.ToString();         //Section Index
                 l.Size = new System.Drawing.Size(88, 17);
                 l.TabIndex = 3;
-                l.Text = SetList[i].NAME == "" ? "Section_"+i.ToString() : SetList[i].NAME;
+                l.Text = (SetList[i].NAME == null) ? "Section_"+i.ToString() : SetList[i].NAME;
                 l.MouseClick += new System.Windows.Forms.MouseEventHandler(this.l_Click);
                 this.BottomPanel.Controls.Add(l);
-                Console.WriteLine(l.Text);
+                Console.WriteLine("text: "+l.Text);
             }
         }
 
@@ -1399,6 +1402,24 @@ namespace Editor
 
 
             return jObj.ToString();
+        }
+
+        private void AutoSave_Tick(object sender, EventArgs e)
+        {
+            if (!isLoaded || !data_is_ready) return;
+            string out_edt = SetEdtrData();
+            string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            AutoSavePath.Text = "AutoSaveAt " + docPath;
+            Console.WriteLine(docPath);
+            using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, music.Text+"_AutoSave.json")))
+            {
+                outputFile.WriteLine(out_edt);
+            }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
 
         private void ParseJArray(ref List<Note> n, JArray nl)
