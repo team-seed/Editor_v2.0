@@ -75,6 +75,8 @@ namespace Editor
         };
         // List<Note> SetList[CurrentSection].noteset = new List<Note>();
         List<SET> SetList = new List<SET>();
+        double current_position = 0;
+        string save_location = "";
         int CurrentSection = 0;
         int CurrentFraction = 1;
         double dilation = 1;
@@ -141,6 +143,7 @@ namespace Editor
             {
                 ProgressBar.Height = 0;
                 axWindowsMediaPlayer1.Ctlcontrols.currentPosition = 0;
+                current_position = 0;
                 axWindowsMediaPlayer1.Ctlcontrols.play();
             }
             else
@@ -160,6 +163,7 @@ namespace Editor
                     First_Setting = false;
                 }
                 axWindowsMediaPlayer1.Ctlcontrols.currentPosition = axWindowsMediaPlayer1.Ctlcontrols.currentItem.duration * ProgressBar.Height / ProgressBar_Background.Height;
+                current_position = axWindowsMediaPlayer1.Ctlcontrols.currentPosition * 1000;
                 timer1.Start();
             }
             else if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsPaused)
@@ -204,6 +208,7 @@ namespace Editor
                 ProgressBar.Height -= 2;
             }
             axWindowsMediaPlayer1.Ctlcontrols.currentPosition = axWindowsMediaPlayer1.Ctlcontrols.currentItem.duration * ProgressBar.Height / ProgressBar_Background.Height;
+            current_position = axWindowsMediaPlayer1.Ctlcontrols.currentPosition * 1000;
             Refresh_Layout();
         }
         private void ProgressBar_Bottom_MouseClick(object sender, MouseEventArgs me)
@@ -215,6 +220,7 @@ namespace Editor
                 axWindowsMediaPlayer1.Ctlcontrols.play();
             }
             axWindowsMediaPlayer1.Ctlcontrols.currentPosition = axWindowsMediaPlayer1.Ctlcontrols.currentItem.duration * ProgressBar.Height / ProgressBar_Background.Height;
+            current_position = axWindowsMediaPlayer1.Ctlcontrols.currentPosition * 1000;
             Refresh_Layout();
         }
         private void ProgressBar_Bottom_MouseDown(object sender, MouseEventArgs me)
@@ -233,6 +239,7 @@ namespace Editor
                     axWindowsMediaPlayer1.Ctlcontrols.play();
                 }
                 axWindowsMediaPlayer1.Ctlcontrols.currentPosition = axWindowsMediaPlayer1.Ctlcontrols.currentItem.duration * ProgressBar.Height / ProgressBar_Background.Height;
+                current_position = axWindowsMediaPlayer1.Ctlcontrols.currentPosition * 1000;
                 Refresh_Layout();
             }
         }
@@ -314,7 +321,9 @@ namespace Editor
             double y;
 
             Current_BeatLines.Clear();
-            double cur_pos = axWindowsMediaPlayer1.Ctlcontrols.currentPosition * 1000;
+            double cur_pos;
+            if (current_position < 0) cur_pos = current_position;
+            else cur_pos = axWindowsMediaPlayer1.Ctlcontrols.currentPosition * 1000;
             // 1. 先從SetList[CurrentSection].noteset 中抓出Hold範圍 找出在畫面上顯示的Hold
             pen.Color = System.Drawing.Color.FromArgb(150, 0, 191, 255);        // 別的Section改半透明
             for (int index = 0; index < SetList.Count(); index++)
@@ -412,15 +421,51 @@ namespace Editor
 
             // 畫 1/n線...
             int Beatcount = 0;
-             double bottom = cur_pos - (100 / dilation);
+            int fraction = 0;
+            double bottom = cur_pos - (100 / dilation);
+            double ofs = SetList[CurrentSection].OFFSET;
+            double baseline = bottom -((bottom - ofs) % BeatLength);
             for (double i = 3000; i > 0; i -= BeatLength/CurrentFraction)
             {
                 if (CurrentFraction == 1) break;
-                double ofs = SetList[CurrentSection].OFFSET;
-                int Cur_Line = Convert.ToInt32(bottom-ofs - ((bottom-ofs) % BeatLength) + (Beatcount++ * BeatLength / CurrentFraction) + ofs);
+
+                fraction = Beatcount % CurrentFraction;
+                int Cur_Line = Convert.ToInt32(baseline + (Beatcount++ * BeatLength / CurrentFraction));
                 string drawString = Cur_Line.ToString();
 
-                pen.Color = System.Drawing.Color.DarkOrange;
+
+                switch (CurrentFraction) 
+                {
+                    case 2:
+                        if (fraction == 1) pen.Color = System.Drawing.Color.FromArgb(255, 209, 95, 71);
+                        break;
+                    case 3:
+                        if (fraction % 3 != 0) pen.Color = System.Drawing.Color.FromArgb(255, 0, 158, 13);
+                        break;
+                    case 4:
+                        if (fraction == 1 || fraction == 3) pen.Color = System.Drawing.Color.FromArgb(255, 122, 244, 248);
+                        else if (fraction == 2) pen.Color = System.Drawing.Color.FromArgb(255, 209, 95, 71);
+                        break;
+                    case 6:
+                        if (fraction == 1 || fraction == 5) pen.Color = System.Drawing.Color.FromArgb(255, 133, 122, 248);
+                        else if (fraction == 2 || fraction == 4) pen.Color = System.Drawing.Color.FromArgb(255, 0, 158, 13);
+                        else pen.Color = System.Drawing.Color.FromArgb(255, 209, 95, 71);
+                        break;
+                    case 8:
+                        if (fraction == 4) pen.Color = System.Drawing.Color.FromArgb(255, 209, 95, 71);
+                        else if (fraction == 2 || fraction == 6) pen.Color = System.Drawing.Color.FromArgb(255, 122, 244, 248);
+                        else pen.Color = System.Drawing.Color.FromArgb(255, 233, 243, 99);
+                        break;
+                    case 12:
+                        if (fraction == 6) pen.Color = System.Drawing.Color.FromArgb(255, 209, 95, 71);
+                        else if (fraction == 3 || fraction == 9) pen.Color = System.Drawing.Color.FromArgb(255, 122, 244, 248);
+                        else if (fraction == 2 || fraction == 10) pen.Color = System.Drawing.Color.FromArgb(255, 133, 122, 248);
+                        else if (fraction == 4 || fraction == 8) pen.Color = System.Drawing.Color.FromArgb(255, 0, 158, 13);
+                        else pen.Color = System.Drawing.Color.FromArgb(255, 130, 255, 190);
+                        break;
+                }
+                
+
                 pen.Width = 3;
 
                 int Beatline_Y = Convert.ToInt32(2900 - (Cur_Line - cur_pos) * dilation);
@@ -428,15 +473,15 @@ namespace Editor
                 Current_BeatLines.Add(new Beatline(Cur_Line, Beatline_Y));
                 e.Graphics.DrawLine(pen, 0, Beatline_Y, MainPanel.Width, Beatline_Y);
                 e.Graphics.DrawString(drawString, drawFont, drawBrush, x, Beatline_Y + 2, drawFormat);
+                e.Graphics.DrawString(fraction.ToString(), drawFont, drawBrush, x+50, Beatline_Y + 2, drawFormat);
 
             }
             // 畫 Beatline
             Beatcount = 0;
              for (double i = 3000; i > 0; i -= BeatLength) {
-                double ofs = SetList[CurrentSection].OFFSET;
-                int Cur_Line = Convert.ToInt32(bottom - ofs - ((bottom - ofs) % BeatLength) + (Beatcount++ * BeatLength ) + ofs);
+                int Cur_Line = Convert.ToInt32( baseline+ (Beatcount++ * BeatLength ));
                 string drawString = Cur_Line.ToString();
-                if (SetList[CurrentSection].BEAT != 0 && Convert.ToInt32(Cur_Line / BeatLength) % SetList[CurrentSection].BEAT == 0)
+                if (SetList[CurrentSection].BEAT != 0 && Convert.ToInt32((Cur_Line-ofs) / BeatLength) % SetList[CurrentSection].BEAT == 0)
                 {
                     pen.Color = System.Drawing.Color.FromArgb(230, 240, 20, 20);
                     pen.Width = 8;
@@ -472,7 +517,7 @@ namespace Editor
                         int leftBound = l * MainPanel.Width / 16;
                         int rightBound = r * MainPanel.Width / 16;
                         int y_pos = Convert.ToInt32(2900 - (SetList[index].noteset[i].pos - cur_pos)*dilation);
-                        pen.Color = System.Drawing.Color.FromArgb(150, 255, 127, 80);
+                        pen.Color = System.Drawing.Color.FromArgb(100, 255, 127, 80);
                         e.Graphics.DrawLine(pen, leftBound, y_pos, rightBound, y_pos);
                         ///
                         //  畫出Note
@@ -560,7 +605,7 @@ namespace Editor
                     int leftBound = l * MainPanel.Width / 16;
                     int rightBound = r * MainPanel.Width / 16;
                     int y_pos = Convert.ToInt32(2900 - (SetList[CurrentSection].noteset[i].pos - cur_pos) * dilation);
-                    pen.Color = System.Drawing.Color.Coral;
+                    pen.Color = System.Drawing.Color.FromArgb(100, 255, 127, 80);
                     e.Graphics.DrawLine(pen, leftBound, y_pos, rightBound, y_pos);
                     ///
                     //  畫出Note
@@ -638,8 +683,6 @@ namespace Editor
       
         private void MainPanel_Background_Paint(object sender, PaintEventArgs e)
         {
-            //if (HasBackground) return;
-            //HasBackground = true;
             //畫線
 
 
@@ -688,19 +731,35 @@ namespace Editor
             if (!isLoaded || !data_is_ready) return;
             if (me.Delta >0)
             {
-                if (Control.ModifierKeys == Keys.Control) 
+                if (Control.ModifierKeys == Keys.Control)
                 {
                     dilation += 0.05;
                 }
-                else axWindowsMediaPlayer1.Ctlcontrols.currentPosition += 0.1 / dilation;
+                else
+                {
+                    if (current_position < 0)
+                    {
+                        current_position += 100 / dilation;
+                        if (current_position > 0) current_position = 0;
+                    }
+                    else
+                    {
+                        axWindowsMediaPlayer1.Ctlcontrols.currentPosition += 0.1 / dilation;
+                        current_position = axWindowsMediaPlayer1.Ctlcontrols.currentPosition *1000;
+                    }
+                }
             }
             else
             {
                 if (Control.ModifierKeys == Keys.Control)
                 {
-                    if(dilation>1) dilation -= 0.05;
+                    if (dilation > 1) dilation -= 0.05;
                 }
-                else axWindowsMediaPlayer1.Ctlcontrols.currentPosition -= 0.1 / dilation;
+                else
+                {
+                    axWindowsMediaPlayer1.Ctlcontrols.currentPosition -= 0.1 / dilation;
+                    current_position -= 100 / dilation;
+                }
             }
             ProgressBar.Height = Convert.ToInt32(Convert.ToDouble(ProgressBar_Background.Height) * axWindowsMediaPlayer1.Ctlcontrols.currentPosition / axWindowsMediaPlayer1.Ctlcontrols.currentItem.duration);
             Refresh_Layout();
@@ -901,6 +960,7 @@ namespace Editor
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
+           
             if (e.KeyChar == 101 || e.KeyChar == 69) 
             {
                 switch (CurrentFraction) 
@@ -1135,7 +1195,11 @@ namespace Editor
                     l.TabIndex = 3;
                     l.Text = name;
                     l.MouseClick += new System.Windows.Forms.MouseEventHandler(this.l_Click);
-
+                    if (BottomPanel.Controls.Count == 0)
+                    {
+                        current_position = offset;
+                        l.BackColor = System.Drawing.Color.Aquamarine;
+                    }
                     SetList.Add(temp);
                     this.BottomPanel.Controls.Add(l);
                 }
@@ -1148,11 +1212,11 @@ namespace Editor
                     SetForm.Label__ref.Text = SetList[SetForm.SectionIndex].NAME;
                 }
                 MainPanel.Refresh();
-                MessageBox.Show("Set Done!");
+               // MessageBox.Show("Set Done!");
             }
             else
             {
-                MessageBox.Show("Set Failed!");
+                //MessageBox.Show("Set Failed!");
             }
         }
         private void Section_Add()
@@ -1163,7 +1227,7 @@ namespace Editor
                 Label l = new Label();
                 l.AutoSize = true;
                 l.Font = new System.Drawing.Font("標楷體", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-                l.BackColor = System.Drawing.Color.White;
+                l.BackColor = (BottomPanel.Controls.Count==0) ? System.Drawing.Color.Aquamarine : System.Drawing.Color.Transparent;
                 l.Location = new System.Drawing.Point(10 + i * 100, 23);
                 l.Name = i.ToString();         //Section Index
                 l.Size = new System.Drawing.Size(88, 17);
@@ -1177,10 +1241,15 @@ namespace Editor
 
         private void l_Click(object sender, MouseEventArgs me)
         {
-            if (me.Button == MouseButtons.Left) 
+            if (me.Button == MouseButtons.Left)
             {
                 Label l1 = (Label)sender;
-                MessageBox.Show("Select " + l1.Name);
+                //MessageBox.Show("Select " + l1.Name);
+                for (int i = 0; i < BottomPanel.Controls.Count; i++)
+                {
+                    BottomPanel.Controls[i].BackColor = System.Drawing.Color.Transparent;
+                }
+                l1.BackColor = System.Drawing.Color.Aquamarine;
                 CurrentSection = Convert.ToInt32(l1.Name);
                 MainPanel.Refresh();
             }
@@ -1211,12 +1280,11 @@ namespace Editor
             sfdialog.RestoreDirectory = true;
             if (sfdialog.ShowDialog() == DialogResult.OK)
             {
+                save_location = sfdialog.FileName;
                 File.WriteAllText(sfdialog.FileName, s);
                 File.WriteAllText(sfdialog.FileName + "_edt", out_edt);
             }
 
-
-            //Console.WriteLine(s);
         }
 
         private void Import_Click(object sender, EventArgs e)
@@ -1410,7 +1478,7 @@ namespace Editor
             string out_edt = SetEdtrData();
             string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             AutoSavePath.Text = "AutoSaveAt " + docPath;
-            Console.WriteLine(docPath);
+           // Console.WriteLine(docPath);
             using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, music.Text+"_AutoSave.json")))
             {
                 outputFile.WriteLine(out_edt);
@@ -1420,6 +1488,35 @@ namespace Editor
         private void Form1_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (data_is_ready && isLoaded && (e.Control && e.KeyCode == Keys.S))
+            {
+                // quick save
+                string s = SetJsonData();
+                string out_edt = SetEdtrData();
+                if (save_location != "")
+                {
+                    File.WriteAllText(save_location, s);
+                    File.WriteAllText(save_location + "_edt", out_edt);
+                }
+                else
+                {
+                    SaveFileDialog sfdialog = new SaveFileDialog();
+                    sfdialog.Filter = "txt files (*.json)|*.json|All files (*.*)|*.*";
+                    sfdialog.FilterIndex = 1;
+                    sfdialog.RestoreDirectory = true;
+                    if (sfdialog.ShowDialog() == DialogResult.OK)
+                    {
+                        save_location = sfdialog.FileName;
+                        File.WriteAllText(sfdialog.FileName, s);
+                        File.WriteAllText(sfdialog.FileName + "_edt", out_edt);
+                    }
+                }
+                AutoSavePath.Text = "QuickSaveAt: " + save_location;
+            }
         }
 
         private void ParseJArray(ref List<Note> n, JArray nl)

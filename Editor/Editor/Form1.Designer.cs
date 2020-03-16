@@ -273,7 +273,7 @@
             this.BottomPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.BottomPanel.AutoScroll = true;
-            this.BottomPanel.BackColor = System.Drawing.Color.PaleTurquoise;
+            this.BottomPanel.BackColor = System.Drawing.Color.Pink;
             this.BottomPanel.Location = new System.Drawing.Point(90, 700);
             this.BottomPanel.Name = "BottomPanel";
             this.BottomPanel.Size = new System.Drawing.Size(421, 55);
@@ -427,7 +427,7 @@
             // 
             this.AutoSavePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.AutoSavePath.AutoSize = true;
-            this.AutoSavePath.Location = new System.Drawing.Point(630, 729);
+            this.AutoSavePath.Location = new System.Drawing.Point(544, 735);
             this.AutoSavePath.Name = "AutoSavePath";
             this.AutoSavePath.Size = new System.Drawing.Size(0, 15);
             this.AutoSavePath.TabIndex = 23;
@@ -495,6 +495,7 @@
             this.Name = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.SizeChanged += new System.EventHandler(this.form1_SizeChanged);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.ProgressBar_Bottom.ResumeLayout(false);
