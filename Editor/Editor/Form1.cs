@@ -181,6 +181,7 @@ namespace Editor
             if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsPlaying)
             {
                 ProgressBar.Height = Convert.ToInt32(Convert.ToDouble(ProgressBar_Background.Height) * axWindowsMediaPlayer1.Ctlcontrols.currentPosition / axWindowsMediaPlayer1.Ctlcontrols.currentItem.duration);
+                current_position = axWindowsMediaPlayer1.Ctlcontrols.currentPosition * 1000;
                 Refresh_Layout();
             }
         }
