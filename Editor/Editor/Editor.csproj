@@ -127,6 +127,10 @@
     <None Include="Resources\swipe.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\使用說明_resizw.jpg" />
+    <None Include="Resources\使用說明_resize.jpg" />
+    <None Include="Resources\使用說明.jpg" />
+    <None Include="Resources\question.png" />
     <None Include="Resources\plus%281%29.png" />
     <None Include="Resources\plus.png" />
     <None Include="Resources\unlink.png" />

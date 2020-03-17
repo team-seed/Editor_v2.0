@@ -49,9 +49,13 @@
             this.Fraction_4 = new System.Windows.Forms.Label();
             this.Fraction_8 = new System.Windows.Forms.Label();
             this.BottomPanel = new System.Windows.Forms.Panel();
-            this.Section = new System.Windows.Forms.Button();
             this.Fraction_6 = new System.Windows.Forms.Label();
             this.Fraction_12 = new System.Windows.Forms.Label();
+            this.AutoSave = new System.Windows.Forms.Timer(this.components);
+            this.AutoSavePath = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.Help = new System.Windows.Forms.Button();
+            this.Section = new System.Windows.Forms.Button();
             this.Hold = new System.Windows.Forms.Button();
             this.Unlink = new System.Windows.Forms.Button();
             this.Link = new System.Windows.Forms.Button();
@@ -61,14 +65,13 @@
             this.Right = new System.Windows.Forms.Button();
             this.Down = new System.Windows.Forms.Button();
             this.Click = new System.Windows.Forms.Button();
-            this.AutoSave = new System.Windows.Forms.Timer(this.components);
-            this.AutoSavePath = new System.Windows.Forms.Label();
             this.MainPanel = new Editor.BackgroundPanel();
             this.MainPanel_Background = new Editor.BackgroundPanel();
             this.flowLayoutPanel1.SuspendLayout();
             this.ProgressBar_Bottom.SuspendLayout();
             this.ProgressBar_Background.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.MainPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -279,20 +282,6 @@
             this.BottomPanel.Size = new System.Drawing.Size(421, 55);
             this.BottomPanel.TabIndex = 7;
             // 
-            // Section
-            // 
-            this.Section.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.Section.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.Section.BackColor = System.Drawing.Color.DeepSkyBlue;
-            this.Section.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.Section.Image = global::Editor.Properties.Resources.plus_1_;
-            this.Section.Location = new System.Drawing.Point(41, 717);
-            this.Section.Name = "Section";
-            this.Section.Size = new System.Drawing.Size(24, 24);
-            this.Section.TabIndex = 2;
-            this.Section.UseVisualStyleBackColor = false;
-            this.Section.Click += new System.EventHandler(this.Settings_Click);
-            // 
             // Fraction_6
             // 
             this.Fraction_6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -320,6 +309,57 @@
             this.Fraction_12.Text = "12";
             this.Fraction_12.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.Fraction_12.Click += new System.EventHandler(this.Fraction_12_Click);
+            // 
+            // AutoSave
+            // 
+            this.AutoSave.Interval = 5000;
+            this.AutoSave.Tick += new System.EventHandler(this.AutoSave_Tick);
+            // 
+            // AutoSavePath
+            // 
+            this.AutoSavePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.AutoSavePath.AutoSize = true;
+            this.AutoSavePath.Location = new System.Drawing.Point(544, 735);
+            this.AutoSavePath.Name = "AutoSavePath";
+            this.AutoSavePath.Size = new System.Drawing.Size(0, 15);
+            this.AutoSavePath.TabIndex = 23;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.pictureBox1.Enabled = false;
+            this.pictureBox1.Image = global::Editor.Properties.Resources.使用說明_resizw;
+            this.pictureBox1.Location = new System.Drawing.Point(0, 40);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(0, 0);
+            this.pictureBox1.TabIndex = 25;
+            this.pictureBox1.TabStop = false;
+            this.pictureBox1.Visible = false;
+            // 
+            // Help
+            // 
+            this.Help.Image = global::Editor.Properties.Resources.question;
+            this.Help.Location = new System.Drawing.Point(10, 10);
+            this.Help.Name = "Help";
+            this.Help.Size = new System.Drawing.Size(24, 24);
+            this.Help.TabIndex = 24;
+            this.Help.UseVisualStyleBackColor = true;
+            this.Help.MouseLeave += new System.EventHandler(this.Help_MouseLeave);
+            this.Help.MouseHover += new System.EventHandler(this.Help_MouseHover);
+            // 
+            // Section
+            // 
+            this.Section.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.Section.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Section.BackColor = System.Drawing.Color.DeepSkyBlue;
+            this.Section.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.Section.Image = global::Editor.Properties.Resources.plus_1_;
+            this.Section.Location = new System.Drawing.Point(41, 717);
+            this.Section.Name = "Section";
+            this.Section.Size = new System.Drawing.Size(24, 24);
+            this.Section.TabIndex = 2;
+            this.Section.UseVisualStyleBackColor = false;
+            this.Section.Click += new System.EventHandler(this.Settings_Click);
             // 
             // Hold
             // 
@@ -418,20 +458,6 @@
             this.Click.UseVisualStyleBackColor = false;
             this.Click.Click += new System.EventHandler(this.Click_Click);
             // 
-            // AutoSave
-            // 
-            this.AutoSave.Interval = 5000;
-            this.AutoSave.Tick += new System.EventHandler(this.AutoSave_Tick);
-            // 
-            // AutoSavePath
-            // 
-            this.AutoSavePath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.AutoSavePath.AutoSize = true;
-            this.AutoSavePath.Location = new System.Drawing.Point(544, 735);
-            this.AutoSavePath.Name = "AutoSavePath";
-            this.AutoSavePath.Size = new System.Drawing.Size(0, 15);
-            this.AutoSavePath.TabIndex = 23;
-            // 
             // MainPanel
             // 
             this.MainPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -467,6 +493,8 @@
             // 
             this.BackColor = System.Drawing.SystemColors.ControlDark;
             this.ClientSize = new System.Drawing.Size(782, 753);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.Help);
             this.Controls.Add(this.AutoSavePath);
             this.Controls.Add(this.Section);
             this.Controls.Add(this.Fraction_12);
@@ -502,6 +530,7 @@
             this.ProgressBar_Bottom.PerformLayout();
             this.ProgressBar_Background.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayer1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.MainPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -544,6 +573,8 @@
         private System.Windows.Forms.Label Fraction_12;
         private System.Windows.Forms.Timer AutoSave;
         private System.Windows.Forms.Label AutoSavePath;
+        private System.Windows.Forms.Button Help;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 
