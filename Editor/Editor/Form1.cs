@@ -276,7 +276,7 @@ namespace Editor
         {
             List<int> coordinate = new List<int>();
             int nextindex = SetList[section].noteset.FindIndex(xn => xn.pos == SetList[section].noteset[noteindex].nextpos);
-            if (nextindex > 0)
+            if (nextindex >= 0)
             {
                 double x2 = SetList[section].noteset[nextindex].first * MainPanel.Width / 16;
                 double x1 = SetList[section].noteset[noteindex].first * MainPanel.Width     / 16;
@@ -426,6 +426,7 @@ namespace Editor
             double bottom = cur_pos - (100 / dilation);
             double ofs = SetList[CurrentSection].OFFSET;
             double baseline = bottom -((bottom - ofs) % BeatLength);
+            if ((bottom - ofs) < 0) baseline -= BeatLength;
             for (double i = 3000; i > 0; i -= BeatLength/CurrentFraction)
             {
                 if (CurrentFraction == 1) break;
@@ -541,7 +542,7 @@ namespace Editor
                                     if (SetList[index].noteset[i].pos < bottomtime || SetList[index].noteset[i].nextpos > toptime) break;
 
                                     int nextindex = SetList[index].noteset.FindIndex(x1 => x1.pos == SetList[index].noteset[i].nextpos);
-                                    if (nextindex > 0)
+                                    if (nextindex >= 0)
                                     {
                                         if (SetList[index].noteset[nextindex].type != 1)
                                         {
@@ -630,7 +631,7 @@ namespace Editor
                             {
                                 if (SetList[CurrentSection].noteset[i].pos < bottomtime || SetList[CurrentSection].noteset[i].nextpos > toptime) break;
                                 int nextindex = SetList[CurrentSection].noteset.FindIndex(x1 => x1.pos == SetList[CurrentSection].noteset[i].nextpos);
-                                if (nextindex > 0)
+                                if (nextindex >= 0)
                                 {
                                     if (SetList[CurrentSection].noteset[nextindex].type != 1)
                                     {
@@ -647,8 +648,13 @@ namespace Editor
                                 }
                                 else
                                 {
+                                    for (int i1 = 0; i1 < SetList[CurrentSection].noteset.Count; i1++)
+                                    {
+                                        Console.WriteLine(i1.ToString() + " : " + SetList[CurrentSection].noteset[i1].pos);
+                                    }
+                                    
                                     Console.WriteLine("Error Occur at:　" + SetList[CurrentSection].noteset[i].pos + " next: " + SetList[CurrentSection].noteset[i].nextpos);
-                                    Console.WriteLine("pos:" + SetList[CurrentSection].noteset[i].pos + "l:" + SetList[CurrentSection].noteset[i].first + " r:" + SetList[CurrentSection].noteset[i].last + " type:"
+                                    Console.WriteLine("pos:" + SetList[CurrentSection].noteset[i].pos + " l:" + SetList[CurrentSection].noteset[i].first + " r:" + SetList[CurrentSection].noteset[i].last + " type:"
                                      + SetList[CurrentSection].noteset[i].type);
                                 }
                             }
@@ -1240,7 +1246,6 @@ namespace Editor
                 l.Text = (SetList[i].NAME == null) ? "Section_"+i.ToString() : SetList[i].NAME;
                 l.MouseClick += new System.Windows.Forms.MouseEventHandler(this.l_Click);
                 this.BottomPanel.Controls.Add(l);
-                Console.WriteLine("text: "+l.Text);
             }
         }
 
