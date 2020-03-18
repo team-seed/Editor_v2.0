@@ -18,6 +18,7 @@ namespace Editor
 
         public bool set_ready;
         public bool newSection = true;
+        public bool remove = false;
         public int SectionIndex;
         public  Label Label__ref;
 
@@ -37,6 +38,8 @@ namespace Editor
             textBox3.Text = beat.ToString();
             textBox4.Text = name;
             newSection = false;
+            Remove.Enabled = true;
+            Remove.Visible = true;
         }
         public SubForm_setting(int count)
         {
@@ -75,6 +78,12 @@ namespace Editor
         private void textBox4_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void Remove_Click(object sender, EventArgs e)
+        {
+            remove = true;
+            Close();
         }
     }
 }

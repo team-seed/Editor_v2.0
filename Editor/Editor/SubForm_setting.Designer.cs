@@ -37,6 +37,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.textBox4 = new System.Windows.Forms.TextBox();
+            this.Remove = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -123,11 +124,25 @@
             this.textBox4.Text = "Section_1";
             this.textBox4.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
             // 
+            // Remove
+            // 
+            this.Remove.Enabled = false;
+            this.Remove.Font = new System.Drawing.Font("新細明體", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Remove.Location = new System.Drawing.Point(115, 277);
+            this.Remove.Name = "Remove";
+            this.Remove.Size = new System.Drawing.Size(89, 39);
+            this.Remove.TabIndex = 9;
+            this.Remove.Text = "Remove";
+            this.Remove.UseVisualStyleBackColor = true;
+            this.Remove.Visible = false;
+            this.Remove.Click += new System.EventHandler(this.Remove_Click);
+            // 
             // SubForm_setting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(410, 344);
+            this.Controls.Add(this.Remove);
             this.Controls.Add(this.textBox4);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -155,5 +170,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.Button Remove;
     }
 }

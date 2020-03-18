@@ -1216,17 +1216,39 @@ namespace Editor
                 }
                 else 
                 {
-                    SetForm.SetData(ref SetList[SetForm.SectionIndex].NAME,
-                                        ref SetList[SetForm.SectionIndex].BPM,
-                                          ref SetList[SetForm.SectionIndex].OFFSET,
-                                           ref SetList[SetForm.SectionIndex].BEAT );
-                    SetForm.Label__ref.Text = SetList[SetForm.SectionIndex].NAME;
+
+                        SetForm.SetData(ref SetList[SetForm.SectionIndex].NAME,
+                                            ref SetList[SetForm.SectionIndex].BPM,
+                                              ref SetList[SetForm.SectionIndex].OFFSET,
+                                               ref SetList[SetForm.SectionIndex].BEAT);
+                        SetForm.Label__ref.Text = SetList[SetForm.SectionIndex].NAME;
                 }
                 MainPanel.Refresh();
                // MessageBox.Show("Set Done!");
             }
             else
             {
+                if (SetForm.remove)
+                {
+                    if (BottomPanel.Controls.Contains(SetForm.Label__ref))
+                    {
+                        int index = Convert.ToInt32(SetForm.Label__ref.Name);
+                        for (int i = index+1; i < SetList.Count; i++)
+                        {
+                            if (i == CurrentSection) CurrentSection--;
+                            Control[] temp = BottomPanel.Controls.Find(i.ToString(),true);
+                            temp[0].Name = (i - 1).ToString();
+                            temp[0].Location = new Point(temp[0].Location.X-100,temp[0].Location.Y);
+                        }
+                        SetList.RemoveAt(index);
+                        if (CurrentSection!=0 && CurrentSection >= SetList.Count) CurrentSection--;
+                        BottomPanel.Controls.Remove(SetForm.Label__ref);
+                        Control[] temp2 = BottomPanel.Controls.Find(CurrentSection.ToString(), true);
+                        temp2[0].BackColor = System.Drawing.Color.Aquamarine;
+                        if (SetList.Count == 0) data_is_ready = false;
+                        MainPanel.Refresh();
+                    }
+                }
                 //MessageBox.Show("Set Failed!");
             }
         }
