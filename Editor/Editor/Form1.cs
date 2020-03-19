@@ -73,23 +73,23 @@ namespace Editor
                 this.noteset = n;
             }
         };
-        // List<Note> SetList[CurrentSection].noteset = new List<Note>();
+
         List<SET> SetList = new List<SET>();
         double current_position = 0;
+        double dilation = 1;
         string save_location = "";
         int CurrentSection = 0;
         int CurrentFraction = 1;
-        double dilation = 1;
         int CurrentType = 0;
         int CurrentDir  = 0;
         int CurrentHoldMode = 0;
         bool data_is_ready = false;
+        bool isDragging = false;
+        bool isLoaded = false;
         SubForm_setting SetForm;
         Graphics BackGraphics;
         Bitmap backBmp;
 
-        bool isDragging = false;
-        bool isLoaded = false;
 
         public Form1()
         {
@@ -108,9 +108,10 @@ namespace Editor
             MainPanel_Background.Refresh();
         }
 
-        ///
-        // Music Control
-        ///
+    ///
+    // Music Control
+    ///
+
         bool First_Setting = false;
         private void SelectMusic_Click(object sender, EventArgs e)
         {
@@ -186,9 +187,9 @@ namespace Editor
             }
         }
         
-        ///
-        // MusicProgressBar
-        ///
+    ///
+    // MusicProgressBar
+    ///
 
         private void Refresh_Layout() 
         {
@@ -250,12 +251,10 @@ namespace Editor
             isDragging = false;
         }
 
-        ///
-        // MainPanel
-        ///
-        /// 令MainPanel 高度為 3000 , 顯示出的範圍約700ms 
-        /// 隨著ProgressBar , 計算出當前Panel上應該要顯示出的畫面 
-        /// 
+    ///
+    // MainPanel
+    ///
+
         class Beatline 
         {
             public  Beatline(int Time,int Y) 
@@ -313,23 +312,28 @@ namespace Editor
             e.Graphics.CompositingQuality = CompositingQuality.HighQuality;
             e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
            
-            double BeatLength = 60 / SetList[CurrentSection].BPM * 1000;
+            
             System.Drawing.Pen pen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(255, 0, 0, 0), 5);
             System.Drawing.Font drawFont = new System.Drawing.Font("Arial", 10);
             System.Drawing.SolidBrush drawBrush = new System.Drawing.SolidBrush(System.Drawing.Color.Black);
             System.Drawing.StringFormat drawFormat = new System.Drawing.StringFormat();
-            float x = 0.0F;
-            double y;
+            
 
             Current_BeatLines.Clear();
+            double BeatLength = 60 / SetList[CurrentSection].BPM * 1000;
             double cur_pos;
             if (current_position < 0) cur_pos = current_position;
             else cur_pos = axWindowsMediaPlayer1.Ctlcontrols.currentPosition * 1000;
-            // 1. 先從SetList[CurrentSection].noteset 中抓出Hold範圍 找出在畫面上顯示的Hold
-            pen.Color = System.Drawing.Color.FromArgb(150, 0, 191, 255);        // 別的Section改半透明
+
+
+        ///
+        //   (out of panel) Hold 
+        ///
+
             for (int index = 0; index < SetList.Count(); index++)
             {
-                if (index == CurrentSection) continue;
+                if (index == CurrentSection)    pen.Color = System.Drawing.Color.FromArgb(200, 0, 191, 255);
+                else    pen.Color = System.Drawing.Color.FromArgb(150, 0, 191, 255);
                 for (int i = 0; i < SetList[index].noteset.Count(); i++)
                 {
                     if (SetList[index].noteset[i].nextpos == -1) continue;
@@ -375,52 +379,11 @@ namespace Editor
 
                 }
             }
-            // CurrentSection 最後畫
-            pen.Color = System.Drawing.Color.FromArgb(200, 0, 191, 255);
-            for (int i = 0; i < SetList[CurrentSection].noteset.Count(); i++)
-            {
-                if (SetList[CurrentSection].noteset[i].nextpos == -1) continue;
-                double toptime = cur_pos + (BottomPanel.Location.Y - 100) / dilation;
-                double bottomtime = cur_pos - (100 / dilation);
-                if (SetList[CurrentSection].noteset[i].nextpos >= toptime && SetList[CurrentSection].noteset[i].pos <= bottomtime)    // 全版
-                {
-                    int top_y = Convert.ToInt32(3000 - BottomPanel.Location.Y);
-                    int bottom_y = 3000;
-                    List<int> temp = Coordinate_Cal(CurrentSection, i, toptime, bottomtime);
-                    if (temp.Count() == 0) { continue; }
-                    Point[] HoldPoints = { new Point(temp[0],top_y), new Point(temp[1],top_y)
-                                            , new Point(temp[3],bottom_y),new Point(temp[2],bottom_y)};
-                    e.Graphics.FillPolygon(pen.Brush, HoldPoints);
-                }
-                else if (SetList[CurrentSection].noteset[i].nextpos >= toptime && SetList[CurrentSection].noteset[i].pos < toptime)   // 上版
-                {
-                    int top_y = Convert.ToInt32(3000 - BottomPanel.Location.Y);
-                    int bottom_y = Convert.ToInt32(2900 - (SetList[CurrentSection].noteset[i].pos - cur_pos) * dilation);
-                    int bottom_x1 = SetList[CurrentSection].noteset[i].first * MainPanel.Width / 16;
-                    int bottom_x2 = SetList[CurrentSection].noteset[i].last * MainPanel.Width / 16;
-                    List<int> temp = Coordinate_Cal(CurrentSection, i, toptime, bottomtime);
-                    if (temp.Count() == 0) { continue; }
-                    Point[] HoldPoints = { new Point(temp[0],top_y), new Point(temp[1],top_y)
-                                            , new Point(bottom_x2,bottom_y),new Point(bottom_x1,bottom_y)};
-                    e.Graphics.FillPolygon(pen.Brush, HoldPoints);
-                }
-                else if (SetList[CurrentSection].noteset[i].nextpos > bottomtime && SetList[CurrentSection].noteset[i].pos <= bottomtime) // 下版
-                {
-                    int top_y = Convert.ToInt32(2900 - (SetList[CurrentSection].noteset[i].nextpos - cur_pos) * dilation);
-                    int bottom_y = 3000;
-                    int nextindex = SetList[CurrentSection].noteset.FindIndex(xn => xn.pos == SetList[CurrentSection].noteset[i].nextpos);
-                    if (nextindex < 0) continue;
-                    int top_x1 = SetList[CurrentSection].noteset[nextindex].first * MainPanel.Width / 16;
-                    int top_x2 = SetList[CurrentSection].noteset[nextindex].last * MainPanel.Width / 16;
-                    List<int> temp = Coordinate_Cal(CurrentSection, i, toptime, bottomtime);
-                    if (temp.Count() == 0) { continue; }
-                    Point[] HoldPoints = { new Point(top_x1,top_y), new Point(top_x2,top_y)
-                                            , new Point(temp[3],bottom_y),new Point(temp[2],bottom_y)};
-                    e.Graphics.FillPolygon(pen.Brush, HoldPoints);
-                }
-            }
 
-            // 畫 1/n線...
+        ///
+        //  1/n BeatLine
+        ///
+
             int Beatcount = 0;
             int fraction = 0;
             double bottom = cur_pos - (100 / dilation);
@@ -449,7 +412,7 @@ namespace Editor
                         else if (fraction == 2) pen.Color = System.Drawing.Color.FromArgb(255, 209, 95, 71);
                         break;
                     case 6:
-                        if (fraction == 1 || fraction == 5) pen.Color = System.Drawing.Color.FromArgb(255, 133, 122, 248);
+                        if (fraction == 1 || fraction == 5) pen.Color = System.Drawing.Color.FromArgb(255, 0, 158, 13);//pen.Color = System.Drawing.Color.FromArgb(255, 133, 122, 248);
                         else if (fraction == 2 || fraction == 4) pen.Color = System.Drawing.Color.FromArgb(255, 0, 158, 13);
                         else pen.Color = System.Drawing.Color.FromArgb(255, 209, 95, 71);
                         break;
@@ -461,7 +424,7 @@ namespace Editor
                     case 12:
                         if (fraction == 6) pen.Color = System.Drawing.Color.FromArgb(255, 209, 95, 71);
                         else if (fraction == 3 || fraction == 9) pen.Color = System.Drawing.Color.FromArgb(255, 122, 244, 248);
-                        else if (fraction == 2 || fraction == 10) pen.Color = System.Drawing.Color.FromArgb(255, 133, 122, 248);
+                        else if (fraction == 2 || fraction == 10) pen.Color = System.Drawing.Color.FromArgb(255, 0, 158, 13);//pen.Color = System.Drawing.Color.FromArgb(255, 133, 122, 248);
                         else if (fraction == 4 || fraction == 8) pen.Color = System.Drawing.Color.FromArgb(255, 0, 158, 13);
                         else pen.Color = System.Drawing.Color.FromArgb(255, 130, 255, 190);
                         break;
@@ -474,11 +437,13 @@ namespace Editor
 
                 Current_BeatLines.Add(new Beatline(Cur_Line, Beatline_Y));
                 e.Graphics.DrawLine(pen, 0, Beatline_Y, MainPanel.Width, Beatline_Y);
-                e.Graphics.DrawString(drawString, drawFont, drawBrush, x, Beatline_Y + 2, drawFormat);
-                e.Graphics.DrawString(fraction.ToString(), drawFont, drawBrush, x+50, Beatline_Y + 2, drawFormat);
+                e.Graphics.DrawString(drawString, drawFont, drawBrush, 0, Beatline_Y + 2, drawFormat);
+                e.Graphics.DrawString(fraction.ToString(), drawFont, drawBrush, 50, Beatline_Y + 2, drawFormat);
 
             }
-            // 畫 Beatline
+        ///
+        //  Beatline
+        ///  
             Beatcount = 0;
              for (double i = 3000; i > 0; i -= BeatLength) {
                 int Cur_Line = Convert.ToInt32( baseline+ (Beatcount++ * BeatLength ));
@@ -496,12 +461,13 @@ namespace Editor
                 int BeatLine_Y = Convert.ToInt32( 2900 - (Cur_Line - cur_pos)*dilation );
                 Current_BeatLines.Add( new Beatline( Cur_Line, BeatLine_Y ) );
                 e.Graphics.DrawLine(pen, 0, BeatLine_Y, MainPanel.Width, BeatLine_Y);
-                e.Graphics.DrawString(drawString, drawFont, drawBrush, x, BeatLine_Y+2, drawFormat);
+                e.Graphics.DrawString(drawString, drawFont, drawBrush, 0, BeatLine_Y+2, drawFormat);
             }
-            // 畫Note
+        ///
+        //  Note
+        ///
             for(int index=0;index<SetList.Count();index++)
             {
-                if (index == CurrentSection) continue;
                 for (int i = 0; i < SetList[index].noteset.Count(); i++)
                 {
                     double toptime = cur_pos + (BottomPanel.Location.Y - 100) * dilation;
@@ -519,8 +485,11 @@ namespace Editor
                         int leftBound = l * MainPanel.Width / 16;
                         int rightBound = r * MainPanel.Width / 16;
                         int y_pos = Convert.ToInt32(2900 - (SetList[index].noteset[i].pos - cur_pos)*dilation);
-                        pen.Color = System.Drawing.Color.FromArgb(100, 255, 127, 80);
+                        
+                        if (index == CurrentSection) pen.Color = System.Drawing.Color.FromArgb(100, 255, 200, 200);
+                        else    pen.Color = System.Drawing.Color.FromArgb(40, 255, 200, 200);
                         e.Graphics.DrawLine(pen, leftBound, y_pos, rightBound, y_pos);
+
                         ///
                         //  畫出Note
                         ///
@@ -530,15 +499,24 @@ namespace Editor
                                 GraphicsPath path = new GraphicsPath();
                                 path.AddEllipse(leftBound - 5, y_pos - 10, rightBound - leftBound + 10, 20);
                                 PathGradientBrush pthGrBrush = new PathGradientBrush(path);
-                                pthGrBrush.CenterColor = System.Drawing.Color.FromArgb(200, 252, 82, 82);
-                                System.Drawing.Color[] colors = { System.Drawing.Color.FromArgb(200, 218, 18, 18) };
+                                System.Drawing.Color[] colors = { System.Drawing.Color.FromArgb(225, 218, 18, 18) };
+
+                                if (index == CurrentSection)
+                                {
+                                    pthGrBrush.CenterColor = System.Drawing.Color.FromArgb(225, 252, 82, 82);
+                                    colors[0] = System.Drawing.Color.FromArgb(225, 218, 18, 18);
+                                }
+                                else 
+                                {
+                                    pthGrBrush.CenterColor = System.Drawing.Color.FromArgb(170, 252, 82, 82);
+                                    colors[0] = System.Drawing.Color.FromArgb(170, 218, 18, 18);
+                                }
                                 pthGrBrush.SurroundColors = colors;
                                 e.Graphics.FillRectangle(pthGrBrush, leftBound - 5, y_pos - 7, rightBound - leftBound + 10, 14);
                                 break;
                             case 1:
                                 if (SetList[index].noteset[i].nextpos != -1)
                                 {
-                                    bool temp = false;
                                     if (SetList[index].noteset[i].pos < bottomtime || SetList[index].noteset[i].nextpos > toptime) break;
 
                                     int nextindex = SetList[index].noteset.FindIndex(x1 => x1.pos == SetList[index].noteset[i].nextpos);
@@ -552,7 +530,10 @@ namespace Editor
                                         int next_left = SetList[index].noteset[nextindex].first * MainPanel.Width / 16; ;
                                         int next_right = SetList[index].noteset[nextindex].last * MainPanel.Width / 16; ;
                                         int next_y = Convert.ToInt32(2900 + (cur_pos - SetList[index].noteset[nextindex].pos )*dilation );
-                                        pen.Color = System.Drawing.Color.FromArgb(150, 0, 191, 255);
+
+                                        if (index == CurrentSection) pen.Color = System.Drawing.Color.FromArgb(200, 0, 191, 255);
+                                        else    pen.Color = System.Drawing.Color.FromArgb(150, 0, 191, 255);
+
                                         Point[] HoldPoints = { new Point(next_left,next_y), new Point(next_right,next_y),
                                                             new Point(rightBound,y_pos), new Point(leftBound,y_pos)};
                                         e.Graphics.FillPolygon(pen.Brush, HoldPoints);
@@ -566,7 +547,10 @@ namespace Editor
                                 }
                                 break;
                             case 2:
-                                System.Drawing.Pen pen2 = new System.Drawing.Pen(System.Drawing.Color.FromArgb(155, 100, 240, 200), 5);
+                                System.Drawing.Pen pen2;
+                                if (index == CurrentSection) pen2 = new System.Drawing.Pen(System.Drawing.Color.FromArgb(225, 100, 240, 200), 5);
+                                else  pen2 = new System.Drawing.Pen(System.Drawing.Color.FromArgb(155, 100, 240, 200), 5);
+                                
                                 e.Graphics.FillRectangle(pen2.Brush, leftBound, y_pos - 10, rightBound - leftBound, 20);
                                 for (int count = leftBound; count < rightBound - 10; count += 20)
                                 {
@@ -593,99 +577,7 @@ namespace Editor
                     }
                 }
             }
-            for (int i = 0; i < SetList[CurrentSection].noteset.Count(); i++)
-            {
-                double toptime = cur_pos + (BottomPanel.Location.Y - 100) * dilation;
-                double bottomtime = cur_pos - 100 * dilation;
-                if (SetList[CurrentSection].noteset[i].pos >= bottomtime && SetList[CurrentSection].noteset[i].pos <= toptime)
-                {
-
-                    int l = SetList[CurrentSection].noteset[i].first;
-                    int r = SetList[CurrentSection].noteset[i].last;
-
-
-                    ///
-                    // 畫出選取範圍
-                    ///
-                    int leftBound = l * MainPanel.Width / 16;
-                    int rightBound = r * MainPanel.Width / 16;
-                    int y_pos = Convert.ToInt32(2900 - (SetList[CurrentSection].noteset[i].pos - cur_pos) * dilation);
-                    pen.Color = System.Drawing.Color.FromArgb(100, 255, 127, 80);
-                    e.Graphics.DrawLine(pen, leftBound, y_pos, rightBound, y_pos);
-                    ///
-                    //  畫出Note
-                    ///
-                    switch (SetList[CurrentSection].noteset[i].type)
-                    {
-                        case 0:
-                            GraphicsPath path = new GraphicsPath();
-                            path.AddEllipse(leftBound - 5, y_pos - 10, rightBound - leftBound + 10, 20);
-                            PathGradientBrush pthGrBrush = new PathGradientBrush(path);
-                            pthGrBrush.CenterColor = System.Drawing.Color.FromArgb(255, 252, 82, 82);
-                            System.Drawing.Color[] colors = { System.Drawing.Color.FromArgb(255, 218, 18, 18) };
-                            pthGrBrush.SurroundColors = colors;
-                            e.Graphics.FillRectangle(pthGrBrush, leftBound - 5, y_pos - 7, rightBound - leftBound + 10, 14);
-                            break;
-                        case 1:
-                            if (SetList[CurrentSection].noteset[i].nextpos != -1)
-                            {
-                                if (SetList[CurrentSection].noteset[i].pos < bottomtime || SetList[CurrentSection].noteset[i].nextpos > toptime) break;
-                                int nextindex = SetList[CurrentSection].noteset.FindIndex(x1 => x1.pos == SetList[CurrentSection].noteset[i].nextpos);
-                                if (nextindex >= 0)
-                                {
-                                    if (SetList[CurrentSection].noteset[nextindex].type != 1)
-                                    {
-                                        SetList[CurrentSection].noteset[i].nextpos = -1;
-                                        break;
-                                    }
-                                    int next_left = SetList[CurrentSection].noteset[nextindex].first * MainPanel.Width / 16; ;
-                                    int next_right = SetList[CurrentSection].noteset[nextindex].last * MainPanel.Width / 16; ;
-                                    int next_y = Convert.ToInt32(2900 + (cur_pos - SetList[CurrentSection].noteset[nextindex].pos) * dilation);
-                                    pen.Color = System.Drawing.Color.FromArgb(200, 0, 191, 255);
-                                    Point[] HoldPoints = { new Point(next_left,next_y), new Point(next_right,next_y),
-                                                            new Point(rightBound,y_pos), new Point(leftBound,y_pos)};
-                                    e.Graphics.FillPolygon(pen.Brush, HoldPoints);
-                                }
-                                else
-                                {
-                                    for (int i1 = 0; i1 < SetList[CurrentSection].noteset.Count; i1++)
-                                    {
-                                        Console.WriteLine(i1.ToString() + " : " + SetList[CurrentSection].noteset[i1].pos);
-                                    }
-                                    
-                                    Console.WriteLine("Error Occur at:　" + SetList[CurrentSection].noteset[i].pos + " next: " + SetList[CurrentSection].noteset[i].nextpos);
-                                    Console.WriteLine("pos:" + SetList[CurrentSection].noteset[i].pos + " l:" + SetList[CurrentSection].noteset[i].first + " r:" + SetList[CurrentSection].noteset[i].last + " type:"
-                                     + SetList[CurrentSection].noteset[i].type);
-                                }
-                            }
-                            break;
-                        case 2:
-                            System.Drawing.Pen pen2 = new System.Drawing.Pen(System.Drawing.Color.FromArgb(225, 100, 240, 200), 5);
-                            e.Graphics.FillRectangle(pen2.Brush, leftBound, y_pos - 10, rightBound - leftBound, 20);
-                            for (int count = leftBound; count < rightBound - 10; count += 20)
-                            {
-                                switch (SetList[CurrentSection].noteset[i].dir)
-                                {
-                                    case 0:
-                                        e.Graphics.DrawString("▲", drawFont, drawBrush, count, y_pos - 8, drawFormat);
-                                        break;
-                                    case 1:
-                                        e.Graphics.DrawString("▼", drawFont, drawBrush, count, y_pos - 8, drawFormat);
-                                        break;
-                                    case 2:
-                                        e.Graphics.DrawString("❮", drawFont, drawBrush, count, y_pos - 8, drawFormat);
-                                        break;
-                                    case 3:
-                                        e.Graphics.DrawString("❯", drawFont, drawBrush, count, y_pos - 8, drawFormat);
-                                        break;
-                                }
-                            }
-                            pen2.Dispose();
-                            //e.Graphics.DrawString("2", drawFont, drawBrush, (l + r) * MainPanel.Width / 32, cur_pos % BeatLength + y - 5, drawFormat);
-                            break;
-                    }
-                }
-            }
+        
             pen.Dispose();
             drawFormat.Dispose();
             drawFont.Dispose();
@@ -694,8 +586,6 @@ namespace Editor
       
         private void MainPanel_Background_Paint(object sender, PaintEventArgs e)
         {
-            //畫線
-
 
             System.Drawing.Pen pen = new System.Drawing.Pen(System.Drawing.Color.DarkGray,5);
             int mpw = MainPanel_Background.Width;
@@ -910,9 +800,9 @@ namespace Editor
             isEditting = false;
         }
 
-        ///
-        //  TypeSwitchEvent
-        ///
+    ///
+    //  TypeSwitchEvent
+    ///
         private void TypeSwitch(int type)
         {
             switch (type)
