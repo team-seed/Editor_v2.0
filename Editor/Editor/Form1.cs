@@ -127,7 +127,7 @@ namespace Editor
                 First_Setting = true;
                 isLoaded = true;
                 axWindowsMediaPlayer1.Ctlcontrols.play();
-                Import.BackColor = System.Drawing.Color.FromArgb(255, 227, 227, 227);
+                Import.BackColor = System.Drawing.Color.LightGray;
                 Import.Enabled = true;
             }
 
@@ -547,11 +547,27 @@ namespace Editor
                                 }
                                 break;
                             case 2:
-                                System.Drawing.Pen pen2;
-                                if (index == CurrentSection) pen2 = new System.Drawing.Pen(System.Drawing.Color.FromArgb(225, 100, 240, 200), 5);
-                                else  pen2 = new System.Drawing.Pen(System.Drawing.Color.FromArgb(155, 100, 240, 200), 5);
-                                
+                                System.Drawing.Pen pen2 = new System.Drawing.Pen(System.Drawing.Color.FromArgb(225, 100, 240, 200), 5);
+
+                                switch (SetList[index].noteset[i].dir)
+                                {
+                                    case 0:
+                                        pen2.Color = System.Drawing.Color.FromArgb(225, 255, 0, 0);
+                                        break;
+                                    case 1:
+                                        pen2.Color = System.Drawing.Color.FromArgb(225, 255, 255, 0);
+                                        break;
+                                    case 2:
+                                        pen2.Color = System.Drawing.Color.FromArgb(225, 0, 0, 255);
+                                        break;
+                                    case 3:
+                                        pen2.Color = System.Drawing.Color.FromArgb(225, 0, 128, 0);
+                                        break;
+                                }
+
+                                if (index != CurrentSection) pen2.Color = System.Drawing.Color.FromArgb(pen2.Color.A - 70,pen2.Color.R,pen2.Color.G,pen2.Color.B);
                                 e.Graphics.FillRectangle(pen2.Brush, leftBound, y_pos - 10, rightBound - leftBound, 20);
+
                                 for (int count = leftBound; count < rightBound - 10; count += 20)
                                 {
                                     switch (SetList[index].noteset[i].dir)
@@ -1088,11 +1104,13 @@ namespace Editor
                     SET temp = new SET(name, bpm, offset, beat);
 
                     Label l = new Label();
-                    l.AutoSize = true;
-                    l.Font = new System.Drawing.Font("標楷體", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+                    l.AutoSize = false;
+                    l.BackColor = System.Drawing.Color.FromArgb(200, 90, 150, 200);
+                    l.Font = new System.Drawing.Font("Ebrima", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
                     l.Location = new System.Drawing.Point(10 + SetList.Count() * 100, 23);
                     l.Name  = (SetList.Count()).ToString();         //Section Index
-                    l.Size = new System.Drawing.Size(88, 17);
+                    l.Size = new System.Drawing.Size(90, 20);
+                    l.TextAlign = ContentAlignment.MiddleCenter;
                     l.TabIndex = 3;
                     l.Text = name;
                     l.MouseClick += new System.Windows.Forms.MouseEventHandler(this.l_Click);
@@ -1134,7 +1152,7 @@ namespace Editor
                         if (CurrentSection!=0 && CurrentSection >= SetList.Count) CurrentSection--;
                         BottomPanel.Controls.Remove(SetForm.Label__ref);
                         Control[] temp2 = BottomPanel.Controls.Find(CurrentSection.ToString(), true);
-                        temp2[0].BackColor = System.Drawing.Color.Aquamarine;
+                        if(temp2.Length>0)temp2[0].BackColor = System.Drawing.Color.Aquamarine;
                         if (SetList.Count == 0) data_is_ready = false;
                         MainPanel.Refresh();
                     }
@@ -1144,16 +1162,17 @@ namespace Editor
         }
         private void Section_Add()
         {
-
+            this.BottomPanel.Controls.Clear();
             for (int i = 0; i < SetList.Count(); i++)
             { 
                 Label l = new Label();
-                l.AutoSize = true;
-                l.Font = new System.Drawing.Font("標楷體", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-                l.BackColor = (BottomPanel.Controls.Count==0) ? System.Drawing.Color.Aquamarine : System.Drawing.Color.Transparent;
+                l.AutoSize = false;
+                l.Font = new System.Drawing.Font("Ebrima", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+                l.BackColor = (BottomPanel.Controls.Count==0) ? System.Drawing.Color.Aquamarine : System.Drawing.Color.FromArgb(200, 90, 150, 200) ;
                 l.Location = new System.Drawing.Point(10 + i * 100, 23);
                 l.Name = i.ToString();         //Section Index
-                l.Size = new System.Drawing.Size(88, 17);
+                l.Size = new System.Drawing.Size(90, 20);
+                l.TextAlign = ContentAlignment.MiddleCenter;
                 l.TabIndex = 3;
                 l.Text = (SetList[i].NAME == null) ? "Section_"+i.ToString() : SetList[i].NAME;
                 l.MouseClick += new System.Windows.Forms.MouseEventHandler(this.l_Click);
@@ -1169,7 +1188,7 @@ namespace Editor
                 //MessageBox.Show("Select " + l1.Name);
                 for (int i = 0; i < BottomPanel.Controls.Count; i++)
                 {
-                    BottomPanel.Controls[i].BackColor = System.Drawing.Color.Transparent;
+                    BottomPanel.Controls[i].BackColor = System.Drawing.Color.FromArgb(200, 90, 150, 200);
                 }
                 l1.BackColor = System.Drawing.Color.Aquamarine;
                 CurrentSection = Convert.ToInt32(l1.Name);
@@ -1452,6 +1471,7 @@ namespace Editor
         {
             pictureBox1.Visible = false;
         }
+
 
         private void ParseJArray(ref List<Note> n, JArray nl)
         {

@@ -92,7 +92,13 @@
             // SelectMusic
             // 
             this.SelectMusic.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.SelectMusic.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.SelectMusic.BackColor = System.Drawing.Color.LightGray;
+            this.SelectMusic.FlatAppearance.BorderColor = System.Drawing.Color.Navy;
+            this.SelectMusic.FlatAppearance.CheckedBackColor = System.Drawing.Color.Gray;
+            this.SelectMusic.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gold;
+            this.SelectMusic.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.SelectMusic.Font = new System.Drawing.Font("MV Boli", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SelectMusic.ForeColor = System.Drawing.Color.Navy;
             this.SelectMusic.Location = new System.Drawing.Point(3, 3);
             this.SelectMusic.Name = "SelectMusic";
             this.SelectMusic.Size = new System.Drawing.Size(111, 44);
@@ -104,7 +110,13 @@
             // PlayPause
             // 
             this.PlayPause.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.PlayPause.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.PlayPause.BackColor = System.Drawing.Color.LightGray;
+            this.PlayPause.FlatAppearance.BorderColor = System.Drawing.Color.Navy;
+            this.PlayPause.FlatAppearance.CheckedBackColor = System.Drawing.Color.Gray;
+            this.PlayPause.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gold;
+            this.PlayPause.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.PlayPause.Font = new System.Drawing.Font("MV Boli", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PlayPause.ForeColor = System.Drawing.Color.Navy;
             this.PlayPause.Location = new System.Drawing.Point(3, 53);
             this.PlayPause.Name = "PlayPause";
             this.PlayPause.Size = new System.Drawing.Size(111, 44);
@@ -116,7 +128,13 @@
             // Export
             // 
             this.Export.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.Export.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.Export.BackColor = System.Drawing.Color.LightGray;
+            this.Export.FlatAppearance.BorderColor = System.Drawing.Color.Navy;
+            this.Export.FlatAppearance.CheckedBackColor = System.Drawing.Color.Gray;
+            this.Export.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gold;
+            this.Export.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Export.Font = new System.Drawing.Font("MV Boli", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Export.ForeColor = System.Drawing.Color.Navy;
             this.Export.Location = new System.Drawing.Point(3, 103);
             this.Export.Name = "Export";
             this.Export.Size = new System.Drawing.Size(111, 44);
@@ -128,8 +146,14 @@
             // Import
             // 
             this.Import.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.Import.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.Import.BackColor = System.Drawing.Color.LightGray;
             this.Import.Enabled = false;
+            this.Import.FlatAppearance.BorderColor = System.Drawing.Color.Navy;
+            this.Import.FlatAppearance.CheckedBackColor = System.Drawing.Color.Gray;
+            this.Import.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gold;
+            this.Import.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Import.Font = new System.Drawing.Font("MV Boli", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Import.ForeColor = System.Drawing.Color.Navy;
             this.Import.Location = new System.Drawing.Point(3, 153);
             this.Import.Name = "Import";
             this.Import.Size = new System.Drawing.Size(111, 44);
@@ -197,6 +221,8 @@
             // 
             this.music.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.music.AutoSize = true;
+            this.music.BackColor = System.Drawing.Color.Transparent;
+            this.music.ForeColor = System.Drawing.SystemColors.ControlText;
             this.music.Location = new System.Drawing.Point(635, 68);
             this.music.Name = "music";
             this.music.Size = new System.Drawing.Size(0, 15);
@@ -223,10 +249,11 @@
             this.Fraction_2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Fraction_2.AutoSize = true;
             this.Fraction_2.BackColor = System.Drawing.Color.White;
-            this.Fraction_2.Font = new System.Drawing.Font("新細明體", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Fraction_2.Font = new System.Drawing.Font("新細明體", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Fraction_2.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Fraction_2.Location = new System.Drawing.Point(633, 12);
             this.Fraction_2.Name = "Fraction_2";
-            this.Fraction_2.Size = new System.Drawing.Size(16, 17);
+            this.Fraction_2.Size = new System.Drawing.Size(17, 17);
             this.Fraction_2.TabIndex = 17;
             this.Fraction_2.Text = "2";
             this.Fraction_2.Click += new System.EventHandler(this.Fraction_2_Click);
@@ -236,10 +263,11 @@
             this.Fraction_3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Fraction_3.AutoSize = true;
             this.Fraction_3.BackColor = System.Drawing.Color.White;
-            this.Fraction_3.Font = new System.Drawing.Font("新細明體", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Fraction_3.Font = new System.Drawing.Font("新細明體", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Fraction_3.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Fraction_3.Location = new System.Drawing.Point(653, 12);
             this.Fraction_3.Name = "Fraction_3";
-            this.Fraction_3.Size = new System.Drawing.Size(16, 17);
+            this.Fraction_3.Size = new System.Drawing.Size(17, 17);
             this.Fraction_3.TabIndex = 18;
             this.Fraction_3.Text = "3";
             this.Fraction_3.Click += new System.EventHandler(this.Fraction_3_Click);
@@ -249,10 +277,11 @@
             this.Fraction_4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Fraction_4.AutoSize = true;
             this.Fraction_4.BackColor = System.Drawing.Color.White;
-            this.Fraction_4.Font = new System.Drawing.Font("新細明體", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Fraction_4.Font = new System.Drawing.Font("新細明體", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Fraction_4.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Fraction_4.Location = new System.Drawing.Point(673, 12);
             this.Fraction_4.Name = "Fraction_4";
-            this.Fraction_4.Size = new System.Drawing.Size(16, 17);
+            this.Fraction_4.Size = new System.Drawing.Size(17, 17);
             this.Fraction_4.TabIndex = 19;
             this.Fraction_4.Text = "4";
             this.Fraction_4.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -263,10 +292,11 @@
             this.Fraction_8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Fraction_8.AutoSize = true;
             this.Fraction_8.BackColor = System.Drawing.Color.White;
-            this.Fraction_8.Font = new System.Drawing.Font("新細明體", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Fraction_8.Font = new System.Drawing.Font("新細明體", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Fraction_8.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Fraction_8.Location = new System.Drawing.Point(677, 30);
             this.Fraction_8.Name = "Fraction_8";
-            this.Fraction_8.Size = new System.Drawing.Size(16, 17);
+            this.Fraction_8.Size = new System.Drawing.Size(17, 17);
             this.Fraction_8.TabIndex = 20;
             this.Fraction_8.Text = "8";
             this.Fraction_8.Click += new System.EventHandler(this.Fraction_8_Click);
@@ -276,7 +306,9 @@
             this.BottomPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.BottomPanel.AutoScroll = true;
-            this.BottomPanel.BackColor = System.Drawing.Color.Pink;
+            this.BottomPanel.BackColor = System.Drawing.Color.SteelBlue;
+            this.BottomPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.BottomPanel.ForeColor = System.Drawing.Color.Black;
             this.BottomPanel.Location = new System.Drawing.Point(90, 700);
             this.BottomPanel.Name = "BottomPanel";
             this.BottomPanel.Size = new System.Drawing.Size(421, 55);
@@ -287,10 +319,11 @@
             this.Fraction_6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Fraction_6.AutoSize = true;
             this.Fraction_6.BackColor = System.Drawing.Color.White;
-            this.Fraction_6.Font = new System.Drawing.Font("新細明體", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Fraction_6.Font = new System.Drawing.Font("新細明體", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Fraction_6.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Fraction_6.Location = new System.Drawing.Point(657, 30);
             this.Fraction_6.Name = "Fraction_6";
-            this.Fraction_6.Size = new System.Drawing.Size(16, 17);
+            this.Fraction_6.Size = new System.Drawing.Size(17, 17);
             this.Fraction_6.TabIndex = 21;
             this.Fraction_6.Text = "6";
             this.Fraction_6.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -301,10 +334,11 @@
             this.Fraction_12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Fraction_12.AutoSize = true;
             this.Fraction_12.BackColor = System.Drawing.Color.White;
-            this.Fraction_12.Font = new System.Drawing.Font("新細明體", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Fraction_12.Font = new System.Drawing.Font("新細明體", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.Fraction_12.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Fraction_12.Location = new System.Drawing.Point(696, 30);
             this.Fraction_12.Name = "Fraction_12";
-            this.Fraction_12.Size = new System.Drawing.Size(24, 17);
+            this.Fraction_12.Size = new System.Drawing.Size(26, 17);
             this.Fraction_12.TabIndex = 22;
             this.Fraction_12.Text = "12";
             this.Fraction_12.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -338,6 +372,8 @@
             // 
             // Help
             // 
+            this.Help.FlatAppearance.BorderSize = 0;
+            this.Help.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Help.Image = global::Editor.Properties.Resources.question;
             this.Help.Location = new System.Drawing.Point(10, 10);
             this.Help.Name = "Help";
@@ -351,12 +387,11 @@
             // 
             this.Section.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.Section.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.Section.BackColor = System.Drawing.Color.DeepSkyBlue;
-            this.Section.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.Section.BackColor = System.Drawing.Color.Lime;
             this.Section.Image = global::Editor.Properties.Resources.plus_1_;
             this.Section.Location = new System.Drawing.Point(41, 717);
             this.Section.Name = "Section";
-            this.Section.Size = new System.Drawing.Size(24, 24);
+            this.Section.Size = new System.Drawing.Size(32, 32);
             this.Section.TabIndex = 2;
             this.Section.UseVisualStyleBackColor = false;
             this.Section.Click += new System.EventHandler(this.Settings_Click);
@@ -450,6 +485,9 @@
             // Click
             // 
             this.Click.BackColor = System.Drawing.Color.Aquamarine;
+            this.Click.FlatAppearance.BorderColor = System.Drawing.Color.Lavender;
+            this.Click.FlatAppearance.BorderSize = 2;
+            this.Click.ForeColor = System.Drawing.SystemColors.Control;
             this.Click.Image = global::Editor.Properties.Resources.click_2_;
             this.Click.Location = new System.Drawing.Point(25, 50);
             this.Click.Name = "Click";
@@ -462,7 +500,7 @@
             // 
             this.MainPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.MainPanel.BackColor = System.Drawing.Color.White;
+            this.MainPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.MainPanel.Controls.Add(this.MainPanel_Background);
             this.MainPanel.Location = new System.Drawing.Point(90, -2300);
             this.MainPanel.Name = "MainPanel";
@@ -491,7 +529,7 @@
             // 
             // Form1
             // 
-            this.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.BackColor = System.Drawing.Color.Gray;
             this.ClientSize = new System.Drawing.Size(782, 753);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.Help);
