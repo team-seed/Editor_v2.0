@@ -84,7 +84,13 @@
       <DependentUpon>SubForm_setting.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\BackgroundPanel.datasource" />
+    <None Include="Properties\DataSources\Editor.Properties.Resources.datasource" />
+    <None Include="Properties\DataSources\Editor.Properties.Settings.datasource" />
     <None Include="Properties\DataSources\Form1.datasource" />
+    <None Include="Properties\DataSources\PanelExtension.datasource" />
+    <None Include="Properties\DataSources\Program.datasource" />
+    <None Include="Properties\DataSources\SubForm_setting.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

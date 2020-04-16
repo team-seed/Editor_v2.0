@@ -27,7 +27,7 @@ namespace Editor
             set_ready = false;
             InitializeComponent();
         }
-        public SubForm_setting(ref Label l1,int index,string name, double bpm, double offset, int beat)
+        public SubForm_setting(ref Label l1,int index,string name, double bpm, double offset, int beat,int gesture)
         {
             set_ready = false;
             InitializeComponent();
@@ -37,6 +37,7 @@ namespace Editor
             textBox2.Text = offset.ToString();
             textBox3.Text = beat.ToString();
             textBox4.Text = name;
+            comboBox1.SelectedIndex = gesture;
             newSection = false;
             Remove.Enabled = true;
             Remove.Visible = true;
@@ -48,11 +49,12 @@ namespace Editor
             textBox4.Text = "Section_" + count.ToString();
         }
 
-        public void SetData(ref string name,ref double bpm, ref double offset, ref int beat) {
+        public void SetData(ref string name,ref double bpm, ref double offset, ref int beat,ref int gesture) {
             name = textBox4.Text;
             bpm = Convert.ToDouble(textBox1.Text);
             offset = Convert.ToDouble(textBox2.Text);
             beat = Convert.ToInt32(textBox3.Text);
+            gesture = comboBox1.SelectedIndex;
             return;
         }
         private void button1_Click(object sender, EventArgs e)
@@ -84,6 +86,21 @@ namespace Editor
         {
             remove = true;
             Close();
+        }
+
+        private void SubForm_setting_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

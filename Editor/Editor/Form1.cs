@@ -58,17 +58,19 @@ namespace Editor
             public double BPM, OFFSET;
             public int BEAT;
             public string NAME;
+            public int GESTURE;
             public List<Note> noteset;
             
-            public SET(string name, double bpm, double offset, int beat)
+            public SET(string name, double bpm, double offset, int beat,int gesture)
             {
                 this.BPM = bpm;
                 this.OFFSET = offset;
                 this.BEAT = beat;
                 this.NAME = name;
+                this.GESTURE = gesture;
                 this.noteset = new List<Note>();
             }
-            public SET(string name, double bpm, double offset, int beat, List<Note> n) : this(name, bpm, offset, beat)
+            public SET(string name, double bpm, double offset, int beat,int gesture, List<Note> n) : this(name, bpm, offset, beat, gesture)
             {
                 this.noteset = n;
             }
@@ -1100,8 +1102,9 @@ namespace Editor
                     string name = "";
                     double bpm = 0, offset = 0;
                     int beat = 0; ;
-                    SetForm.SetData(ref name,ref bpm, ref offset, ref beat);
-                    SET temp = new SET(name, bpm, offset, beat);
+                    int gesture = 0;
+                    SetForm.SetData(ref name,ref bpm, ref offset, ref beat,ref gesture);
+                    SET temp = new SET(name, bpm, offset, beat, gesture);
 
                     Label l = new Label();
                     l.AutoSize = false;
@@ -1128,7 +1131,8 @@ namespace Editor
                         SetForm.SetData(ref SetList[SetForm.SectionIndex].NAME,
                                             ref SetList[SetForm.SectionIndex].BPM,
                                               ref SetList[SetForm.SectionIndex].OFFSET,
-                                               ref SetList[SetForm.SectionIndex].BEAT);
+                                               ref SetList[SetForm.SectionIndex].BEAT,
+                                                 ref SetList[SetForm.SectionIndex].GESTURE);
                         SetForm.Label__ref.Text = SetList[SetForm.SectionIndex].NAME;
                 }
                 MainPanel.Refresh();
@@ -1202,8 +1206,9 @@ namespace Editor
                 double bpm = SetList[index].BPM;
                 double offset = SetList[index].OFFSET;
                 int beat = SetList[index].BEAT;
+                int gesture = SetList[index].GESTURE;
 
-                SetForm = new SubForm_setting(ref l1,index,name,bpm,offset,beat);
+                SetForm = new SubForm_setting(ref l1,index,name,bpm,offset,beat,gesture);
                 SetForm.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SetForm_Closing);
                 SetForm.Show(this);
             }
@@ -1254,10 +1259,11 @@ namespace Editor
                     double BPM = Convert.ToDouble(s["BPM"]);
                     double OFFSET = Convert.ToDouble(s["OFFSET"]);
                     int BEAT = Convert.ToInt32(s["BEATS"]);
+                    int GESTURE = Convert.ToInt32(s["GESTURE"]);
                     List<Note> n = new List<Note>();
                     JArray nt = (JArray)s["NOTES"];
                     ParseJArray(ref n, nt);
-                    SetList.Add(new SET(NAME, BPM, OFFSET, BEAT, n));
+                    SetList.Add(new SET(NAME, BPM, OFFSET, BEAT,GESTURE, n));
 
                 }
 
@@ -1288,7 +1294,7 @@ namespace Editor
                     //  cur = (pos, gesture, first, last, type) 
                     //  cur only for click and swipe.
 
-                    string cur = n.pos.ToString() + ",0," + n.first.ToString() + "," + n.last.ToString() + "," + n.type.ToString();
+                    string cur = n.pos.ToString() + "," + s.GESTURE.ToString() + "," + n.first.ToString() + "," + n.last.ToString() + "," + n.type.ToString();
 
                     if (n.type == 0)            //click
                         Notedata.Add(cur);
@@ -1386,6 +1392,7 @@ namespace Editor
                     new JProperty("NAME", s.NAME),
                     new JProperty("BEATS", s.BEAT),
                     new JProperty("BPM", s.BPM),
+                    new JProperty("GESTURE", s.GESTURE),
                     new JProperty("NOTES",
                         new JArray(
                             from nt in Notedata
