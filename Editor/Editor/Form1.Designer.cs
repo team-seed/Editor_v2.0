@@ -34,8 +34,9 @@
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.SelectMusic = new System.Windows.Forms.Button();
             this.PlayPause = new System.Windows.Forms.Button();
-            this.Export = new System.Windows.Forms.Button();
+            this.Repeat = new System.Windows.Forms.Button();
             this.Import = new System.Windows.Forms.Button();
+            this.Export = new System.Windows.Forms.Button();
             this.ProgressBar_Bottom = new System.Windows.Forms.Panel();
             this.music_duration = new System.Windows.Forms.Label();
             this.music_position = new System.Windows.Forms.Label();
@@ -65,9 +66,9 @@
             this.Right = new System.Windows.Forms.Button();
             this.Down = new System.Windows.Forms.Button();
             this.Click = new System.Windows.Forms.Button();
+            this.Fading = new System.Windows.Forms.Timer(this.components);
             this.MainPanel = new Editor.BackgroundPanel();
             this.MainPanel_Background = new Editor.BackgroundPanel();
-            this.Repeat = new System.Windows.Forms.Button();
             this.flowLayoutPanel1.SuspendLayout();
             this.ProgressBar_Bottom.SuspendLayout();
             this.ProgressBar_Background.SuspendLayout();
@@ -127,23 +128,23 @@
             this.PlayPause.UseVisualStyleBackColor = false;
             this.PlayPause.Click += new System.EventHandler(this.PlayPause_Click);
             // 
-            // Export
+            // Repeat
             // 
-            this.Export.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.Export.BackColor = System.Drawing.Color.LightGray;
-            this.Export.FlatAppearance.BorderColor = System.Drawing.Color.Navy;
-            this.Export.FlatAppearance.CheckedBackColor = System.Drawing.Color.Gray;
-            this.Export.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gold;
-            this.Export.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Export.Font = new System.Drawing.Font("MV Boli", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Export.ForeColor = System.Drawing.Color.Navy;
-            this.Export.Location = new System.Drawing.Point(3, 203);
-            this.Export.Name = "Export";
-            this.Export.Size = new System.Drawing.Size(111, 44);
-            this.Export.TabIndex = 3;
-            this.Export.Text = "Export";
-            this.Export.UseVisualStyleBackColor = false;
-            this.Export.Click += new System.EventHandler(this.Export_Click);
+            this.Repeat.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Repeat.BackColor = System.Drawing.Color.LightGray;
+            this.Repeat.FlatAppearance.BorderColor = System.Drawing.Color.Navy;
+            this.Repeat.FlatAppearance.CheckedBackColor = System.Drawing.Color.Gray;
+            this.Repeat.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gold;
+            this.Repeat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Repeat.Font = new System.Drawing.Font("MV Boli", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Repeat.ForeColor = System.Drawing.Color.Navy;
+            this.Repeat.Location = new System.Drawing.Point(3, 103);
+            this.Repeat.Name = "Repeat";
+            this.Repeat.Size = new System.Drawing.Size(111, 44);
+            this.Repeat.TabIndex = 5;
+            this.Repeat.Text = "Repeat";
+            this.Repeat.UseVisualStyleBackColor = false;
+            this.Repeat.Click += new System.EventHandler(this.Repeat_Click);
             // 
             // Import
             // 
@@ -163,6 +164,24 @@
             this.Import.Text = "Import";
             this.Import.UseVisualStyleBackColor = false;
             this.Import.Click += new System.EventHandler(this.Import_Click);
+            // 
+            // Export
+            // 
+            this.Export.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Export.BackColor = System.Drawing.Color.LightGray;
+            this.Export.FlatAppearance.BorderColor = System.Drawing.Color.Navy;
+            this.Export.FlatAppearance.CheckedBackColor = System.Drawing.Color.Gray;
+            this.Export.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gold;
+            this.Export.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Export.Font = new System.Drawing.Font("MV Boli", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Export.ForeColor = System.Drawing.Color.Navy;
+            this.Export.Location = new System.Drawing.Point(3, 203);
+            this.Export.Name = "Export";
+            this.Export.Size = new System.Drawing.Size(111, 44);
+            this.Export.TabIndex = 3;
+            this.Export.Text = "Export";
+            this.Export.UseVisualStyleBackColor = false;
+            this.Export.Click += new System.EventHandler(this.Export_Click);
             // 
             // ProgressBar_Bottom
             // 
@@ -348,7 +367,7 @@
             // 
             // AutoSave
             // 
-            this.AutoSave.Interval = 5000;
+            this.AutoSave.Interval = 60000;
             this.AutoSave.Tick += new System.EventHandler(this.AutoSave_Tick);
             // 
             // AutoSavePath
@@ -498,6 +517,11 @@
             this.Click.UseVisualStyleBackColor = false;
             this.Click.Click += new System.EventHandler(this.Click_Click);
             // 
+            // Fading
+            // 
+            this.Fading.Interval = 5000;
+            this.Fading.Tick += new System.EventHandler(this.Fading_Tick);
+            // 
             // MainPanel
             // 
             this.MainPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -528,24 +552,6 @@
             this.MainPanel_Background.Size = new System.Drawing.Size(421, 5000);
             this.MainPanel_Background.TabIndex = 1;
             this.MainPanel_Background.Paint += new System.Windows.Forms.PaintEventHandler(this.MainPanel_Background_Paint);
-            // 
-            // Repeat
-            // 
-            this.Repeat.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.Repeat.BackColor = System.Drawing.Color.LightGray;
-            this.Repeat.FlatAppearance.BorderColor = System.Drawing.Color.Navy;
-            this.Repeat.FlatAppearance.CheckedBackColor = System.Drawing.Color.Gray;
-            this.Repeat.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gold;
-            this.Repeat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.Repeat.Font = new System.Drawing.Font("MV Boli", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Repeat.ForeColor = System.Drawing.Color.Navy;
-            this.Repeat.Location = new System.Drawing.Point(3, 103);
-            this.Repeat.Name = "Repeat";
-            this.Repeat.Size = new System.Drawing.Size(111, 44);
-            this.Repeat.TabIndex = 5;
-            this.Repeat.Text = "Repeat";
-            this.Repeat.UseVisualStyleBackColor = false;
-            this.Repeat.Click += new System.EventHandler(this.Repeat_Click);
             // 
             // Form1
             // 
@@ -634,6 +640,7 @@
         private System.Windows.Forms.Button Help;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button Repeat;
+        private System.Windows.Forms.Timer Fading;
     }
 }
 

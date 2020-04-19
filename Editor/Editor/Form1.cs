@@ -1353,7 +1353,7 @@ namespace Editor
             {
                 sinput = File.ReadAllText(ofdialog.FileName);
                 SetList.Clear();
-
+                AutoSave.Start();
 
                 JObject jb = JObject.Parse(sinput);
                 string bpm_range = (string)jb["BPM_RANGE"];
@@ -1534,7 +1534,11 @@ namespace Editor
             if (!isLoaded || !data_is_ready) return;
             string out_edt = SetEdtrData();
             string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string dir = "Editor_AutoSave\\" + music.Text;
+            docPath = System.IO.Path.Combine(docPath, dir);
+            System.IO.Directory.CreateDirectory(docPath);
             AutoSavePath.Text = "AutoSaveAt " + docPath;
+            Fading.Start();
            // Console.WriteLine(docPath);
             using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, music.Text+"_AutoSave.json")))
             {
@@ -1573,6 +1577,7 @@ namespace Editor
                     }
                 }
                 AutoSavePath.Text = "QuickSaveAt: " + save_location;
+                Fading.Start();
             }
         }
 
@@ -1589,6 +1594,12 @@ namespace Editor
             axWindowsMediaPlayer1.Ctlcontrols.play();
             repeat = !repeat;
             if(!repeat) axWindowsMediaPlayer1.Ctlcontrols.pause();
+        }
+
+        private void Fading_Tick(object sender, EventArgs e)
+        {
+            AutoSavePath.Text = "";
+            Fading.Stop();
         }
 
         private void Help_MouseLeave(object sender, EventArgs e)
