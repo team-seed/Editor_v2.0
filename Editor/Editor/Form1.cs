@@ -1344,7 +1344,6 @@ namespace Editor
 
         private void Import_Click(object sender, EventArgs e)
         {
-            SetList.Clear();
             OpenFileDialog ofdialog = new OpenFileDialog();
             string sinput = "";
             ofdialog.Filter = "txt files (*.json_edt)|*.json_edt|All files (*.*)|*.*";
@@ -1353,6 +1352,7 @@ namespace Editor
             if (ofdialog.ShowDialog() == DialogResult.OK)
             {
                 sinput = File.ReadAllText(ofdialog.FileName);
+                SetList.Clear();
 
 
                 JObject jb = JObject.Parse(sinput);
