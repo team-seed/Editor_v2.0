@@ -78,6 +78,7 @@ namespace Editor
 
         List<SET> SetList = new List<SET>();
         double current_position = 0;
+        double first_anchor = -1, last_anchor = -1;
         double dilation = 1;
         string save_location = "";
         int CurrentSection = 0;
@@ -85,6 +86,7 @@ namespace Editor
         int CurrentType = 0;
         int CurrentDir  = 0;
         int CurrentHoldMode = 0;
+        bool repeat = false;
         bool data_is_ready = false;
         bool isDragging = false;
         bool isLoaded = false;
@@ -183,6 +185,10 @@ namespace Editor
         {
             if (axWindowsMediaPlayer1.playState == WMPLib.WMPPlayState.wmppsPlaying)
             {
+                if (repeat && first_anchor!=-1 && last_anchor != -1) {
+                    if (axWindowsMediaPlayer1.Ctlcontrols.currentPosition * 1000 >= last_anchor) axWindowsMediaPlayer1.Ctlcontrols.currentPosition = first_anchor / 1000;
+
+                }
                 ProgressBar.Height = Convert.ToInt32(Convert.ToDouble(ProgressBar_Background.Height) * axWindowsMediaPlayer1.Ctlcontrols.currentPosition / axWindowsMediaPlayer1.Ctlcontrols.currentItem.duration);
                 current_position = axWindowsMediaPlayer1.Ctlcontrols.currentPosition * 1000;
                 Refresh_Layout();
@@ -381,10 +387,10 @@ namespace Editor
 
                 }
             }
-
-        ///
-        //  1/n BeatLine
-        ///
+        
+            ///
+            //  1/n BeatLine
+            ///
 
             int Beatcount = 0;
             int fraction = 0;
@@ -465,10 +471,65 @@ namespace Editor
                 e.Graphics.DrawLine(pen, 0, BeatLine_Y, MainPanel.Width, BeatLine_Y);
                 e.Graphics.DrawString(drawString, drawFont, drawBrush, 0, BeatLine_Y+2, drawFormat);
             }
-        ///
-        //  Note
-        ///
-            for(int index=0;index<SetList.Count();index++)
+            ///
+            //   first & last anchor
+            ///   
+            if (first_anchor != -1 || last_anchor != -1)
+            {
+                double toptime = cur_pos + (BottomPanel.Location.Y - 100) / dilation;
+                double bottomtime = cur_pos - (100 / dilation);
+                if (first_anchor != -1 && first_anchor < toptime && first_anchor > bottomtime)
+                {
+                    pen.Color = System.Drawing.Color.FromArgb(255, 18, 18, 255);
+                    int first_anchor_y = Convert.ToInt32(2900 - (first_anchor - cur_pos) * dilation);
+                    Point[] AnchorPoints = { new Point(MainPanel.Width-20,first_anchor_y+10), new Point(MainPanel.Width,first_anchor_y)
+                                            , new Point(MainPanel.Width-20,first_anchor_y-10)};
+                    e.Graphics.FillPolygon(pen.Brush, AnchorPoints);
+                }
+                if (last_anchor != -1 && last_anchor < toptime && last_anchor > bottomtime)
+                {
+                    pen.Color = System.Drawing.Color.FromArgb(255, 246, 47, 43);
+                    int last_anchor_y = Convert.ToInt32(2900 - (last_anchor - cur_pos) * dilation);
+                    Point[] AnchorPoints = { new Point(MainPanel.Width-20,last_anchor_y+10), new Point(MainPanel.Width,last_anchor_y)
+                                            , new Point(MainPanel.Width-20,last_anchor_y-10)};
+                    e.Graphics.FillPolygon(pen.Brush, AnchorPoints);
+                }
+                if (first_anchor != -1 && last_anchor != -1)
+                {
+                    if (last_anchor >= toptime && first_anchor <= bottomtime)    // 全版
+                    {
+                        int top_y = Convert.ToInt32(3000 - BottomPanel.Location.Y);
+                        int bottom_y = 3000;
+                        pen.Color = System.Drawing.Color.FromArgb(252, 158, 2, 255);
+                        Point[] AnchorPoints = { new Point(MainPanel.Width-4,top_y), new Point(MainPanel.Width,top_y)
+                                                , new Point(MainPanel.Width,bottom_y),new Point(MainPanel.Width-4,bottom_y)};
+                        e.Graphics.FillPolygon(pen.Brush, AnchorPoints);
+                    }
+                    else if (last_anchor >= toptime && first_anchor < toptime)   // 上版
+                    {
+                        int top_y = Convert.ToInt32(3000 - BottomPanel.Location.Y);
+                        int bottom_y = Convert.ToInt32(2900 - (first_anchor - cur_pos) * dilation);
+                        pen.Color = System.Drawing.Color.FromArgb(252, 158, 2, 255);
+                        Point[] AnchorPoints = { new Point(MainPanel.Width-4,top_y), new Point(MainPanel.Width,top_y)
+                                                , new Point(MainPanel.Width,bottom_y),new Point(MainPanel.Width-4,bottom_y)};
+                        e.Graphics.FillPolygon(pen.Brush, AnchorPoints);
+                    }
+                    else if (last_anchor > bottomtime && first_anchor <= bottomtime) // 下版
+                    {
+                        int top_y = Convert.ToInt32(2900 - (last_anchor - cur_pos) * dilation);
+                        int bottom_y = 3000;
+                        pen.Color = System.Drawing.Color.FromArgb(252, 158, 2, 255);
+                        Point[] AnchorPoints = { new Point(MainPanel.Width-4,top_y), new Point(MainPanel.Width,top_y)
+                                                , new Point(MainPanel.Width,bottom_y),new Point(MainPanel.Width-4,bottom_y)};
+                        e.Graphics.FillPolygon(pen.Brush, AnchorPoints);
+                    }
+                }
+
+            }
+            ///
+            //  Note
+            ///
+            for (int index=0;index<SetList.Count();index++)
             {
                 for (int i = 0; i < SetList[index].noteset.Count(); i++)
                 {
@@ -636,9 +697,31 @@ namespace Editor
 
             pen.Dispose();
         }
-        private void MainPanel_Click(object sender, EventArgs e)
+        private void MainPanel_Click(object sender, MouseEventArgs me)
         {
-            Point point   = MainPanel.PointToClient(Cursor.Position);
+            if (!isLoaded || !data_is_ready) return;
+
+            if (me.Button == MouseButtons.Left && Control.ModifierKeys == Keys.Control)
+            {
+                int selectline = 0;
+                foreach (Beatline cur_beatline in Current_BeatLines)
+                {
+                    if (cur_beatline.y < me.Y) break;
+                    selectline++;
+                }
+                first_anchor = Current_BeatLines[selectline].time;
+            }
+            else if (me.Button == MouseButtons.Right && Control.ModifierKeys == Keys.Control)
+            {
+                int selectline = 0;
+                foreach (Beatline cur_beatline in Current_BeatLines)
+                {
+                    if (cur_beatline.y < me.Y) break;
+                    selectline++;
+                }
+                last_anchor = Current_BeatLines[selectline].time;
+            }
+            if (first_anchor > last_anchor) last_anchor = -1;
             MainPanel_Background.Refresh();
         }
 		private void MainPanel_Paint(object sender, PaintEventArgs e)
@@ -688,7 +771,7 @@ namespace Editor
         private void MainPanel_MouseDown(object sender, MouseEventArgs me)
         {
             if (!isLoaded || !data_is_ready) return;
-            if (me.Button == MouseButtons.Right)
+            if (me.Button == MouseButtons.Right && Control.ModifierKeys != Keys.Control)
             {
                 // Delete Note Here
                 int selectline = 0;
@@ -714,7 +797,7 @@ namespace Editor
                     }
                 }
             }
-            else if (me.Button == MouseButtons.Left)
+            else if (me.Button == MouseButtons.Left && Control.ModifierKeys != Keys.Control)
             {
                 isEditting = true;
                 point_x = me.X;
@@ -962,6 +1045,32 @@ namespace Editor
                         Unlink.BringToFront();
                     }
                 }
+            }
+            if (e.KeyChar == 90 || e.KeyChar == 122)
+            {
+                if (!isLoaded || !data_is_ready) return;
+                double step = 60000 / SetList[CurrentSection].BPM;
+                if (current_position < 0)
+                {
+                    current_position += step / dilation;
+                    if (current_position > 0) current_position = 0;
+                }
+                else
+                {
+                    axWindowsMediaPlayer1.Ctlcontrols.currentPosition += step / 1000 / dilation;
+                    current_position = axWindowsMediaPlayer1.Ctlcontrols.currentPosition * 1000;
+                }
+                ProgressBar.Height = Convert.ToInt32(Convert.ToDouble(ProgressBar_Background.Height) * axWindowsMediaPlayer1.Ctlcontrols.currentPosition / axWindowsMediaPlayer1.Ctlcontrols.currentItem.duration);
+                Refresh_Layout();
+            }
+            else if (e.KeyChar == 88 || e.KeyChar == 120)
+            {
+                if (!isLoaded || !data_is_ready) return;
+                double step = 60000 / SetList[CurrentSection].BPM;
+                axWindowsMediaPlayer1.Ctlcontrols.currentPosition -= step / 1000 / dilation;
+                current_position -= step / dilation;
+                ProgressBar.Height = Convert.ToInt32(Convert.ToDouble(ProgressBar_Background.Height) * axWindowsMediaPlayer1.Ctlcontrols.currentPosition / axWindowsMediaPlayer1.Ctlcontrols.currentItem.duration);
+                Refresh_Layout();
             }
         }
         private void Fraction_2_Click(object sender, EventArgs e)
@@ -1472,6 +1581,14 @@ namespace Editor
             pictureBox1.Height = 430;
             pictureBox1.Width = 750;
             pictureBox1.Visible = true;
+        }
+
+        private void Repeat_Click(object sender, EventArgs e)
+        {
+            if (first_anchor == -1 || last_anchor == -1) return;
+            axWindowsMediaPlayer1.Ctlcontrols.play();
+            repeat = !repeat;
+            if(!repeat) axWindowsMediaPlayer1.Ctlcontrols.pause();
         }
 
         private void Help_MouseLeave(object sender, EventArgs e)

@@ -67,6 +67,7 @@
             this.Click = new System.Windows.Forms.Button();
             this.MainPanel = new Editor.BackgroundPanel();
             this.MainPanel_Background = new Editor.BackgroundPanel();
+            this.Repeat = new System.Windows.Forms.Button();
             this.flowLayoutPanel1.SuspendLayout();
             this.ProgressBar_Bottom.SuspendLayout();
             this.ProgressBar_Background.SuspendLayout();
@@ -82,8 +83,9 @@
             this.flowLayoutPanel1.AutoScroll = true;
             this.flowLayoutPanel1.Controls.Add(this.SelectMusic);
             this.flowLayoutPanel1.Controls.Add(this.PlayPause);
-            this.flowLayoutPanel1.Controls.Add(this.Export);
+            this.flowLayoutPanel1.Controls.Add(this.Repeat);
             this.flowLayoutPanel1.Controls.Add(this.Import);
+            this.flowLayoutPanel1.Controls.Add(this.Export);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(630, 100);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(122, 615);
@@ -135,7 +137,7 @@
             this.Export.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Export.Font = new System.Drawing.Font("MV Boli", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Export.ForeColor = System.Drawing.Color.Navy;
-            this.Export.Location = new System.Drawing.Point(3, 103);
+            this.Export.Location = new System.Drawing.Point(3, 203);
             this.Export.Name = "Export";
             this.Export.Size = new System.Drawing.Size(111, 44);
             this.Export.TabIndex = 3;
@@ -506,8 +508,8 @@
             this.MainPanel.Name = "MainPanel";
             this.MainPanel.Size = new System.Drawing.Size(420, 5000);
             this.MainPanel.TabIndex = 0;
-            this.MainPanel.Click += new System.EventHandler(this.MainPanel_Click);
             this.MainPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.MainPanel_Paint);
+            this.MainPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MainPanel_Click);
             this.MainPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MainPanel_MouseDown);
             this.MainPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MainPanel_MouseMove);
             this.MainPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MainPanel_MouseUp);
@@ -526,6 +528,24 @@
             this.MainPanel_Background.Size = new System.Drawing.Size(421, 5000);
             this.MainPanel_Background.TabIndex = 1;
             this.MainPanel_Background.Paint += new System.Windows.Forms.PaintEventHandler(this.MainPanel_Background_Paint);
+            // 
+            // Repeat
+            // 
+            this.Repeat.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Repeat.BackColor = System.Drawing.Color.LightGray;
+            this.Repeat.FlatAppearance.BorderColor = System.Drawing.Color.Navy;
+            this.Repeat.FlatAppearance.CheckedBackColor = System.Drawing.Color.Gray;
+            this.Repeat.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Gold;
+            this.Repeat.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Repeat.Font = new System.Drawing.Font("MV Boli", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Repeat.ForeColor = System.Drawing.Color.Navy;
+            this.Repeat.Location = new System.Drawing.Point(3, 103);
+            this.Repeat.Name = "Repeat";
+            this.Repeat.Size = new System.Drawing.Size(111, 44);
+            this.Repeat.TabIndex = 5;
+            this.Repeat.Text = "Repeat";
+            this.Repeat.UseVisualStyleBackColor = false;
+            this.Repeat.Click += new System.EventHandler(this.Repeat_Click);
             // 
             // Form1
             // 
@@ -613,6 +633,7 @@
         private System.Windows.Forms.Label AutoSavePath;
         private System.Windows.Forms.Button Help;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Button Repeat;
     }
 }
 
